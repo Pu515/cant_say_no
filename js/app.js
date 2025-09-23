@@ -21,6 +21,65 @@
   let noBtnScale = 1;
   let fwTimer = null, floatHeartTimer = null, photoTimer = null;
 
+    // —— 布局控制：更均匀、更少重叠 —— //
+  const SAFE_MARGIN_VW = 3;           // 左右安全边距（防止出框）
+  const GRID_COLS = 6;                // 横向网格列数（越大越均匀）
+  const GRID_ROWS = 3;                // 纵向网格行数（用于下半屏分区）
+  const GRID_TOP_VH = 52;             // 网格顶部（vh）
+  const GRID_BOTTOM_VH = 92;          // 网格底部（vh）
+  const CELL_BUSY_MS = 2800;          // 网格单元占用时间（控制“不要立刻挤在一起”）
+  const RECENT_TTL = 3800;            // 近邻碰撞检测保留时间
+
+  // 网格占位 & 最近位置（简单防碰撞）
+  const gridBusyUntil = new Array(GRID_COLS * GRID_ROWS).fill(0);
+  const recentRects = []; // {x, y, w, h, t}
+
+  // 小工具
+  const vw2px = (v) => window.innerWidth  * (v/100);
+  const vh2px = (v) => window.innerHeight * (v/100);
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const cellIndex = (c, r) => r * GRID_COLS + c;
+
+  // 选一个“优先空闲”的单元格
+  function pickCell() {
+    const now = Date.now();
+    const all = [];
+    for (let r=0; r<GRID_ROWS; r++){
+      for (let c=0; c<GRID_COLS; c++){
+        const busy = gridBusyUntil[cellIndex(c,r)] > now;
+        all.push({c, r, busy});
+      }
+    }
+    const free = all.filter(x => !x.busy);
+    const list = free.length ? free : all;
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  // 记录最近的摆放矩形，用于简单“防重叠”
+  function pushRecent(x, y, w, h){
+    const now = Date.now();
+    recentRects.push({ x, y, w, h, t: now + RECENT_TTL });
+    // 清理过期
+    for (let i=recentRects.length-1; i>=0; i--){
+      if (recentRects[i].t < now) recentRects.splice(i,1);
+    }
+  }
+
+  // 与最近矩形做快速“重叠/太近”检测
+  function tooClose(x, y, w, h){
+    const cx = x + w/2, cy = y + h/2;
+    for (const r of recentRects){
+      if (r.t < Date.now()) continue;
+      const rx = r.x + r.w/2, ry = r.y + r.h/2;
+      const dx = Math.abs(cx - rx);
+      const dy = Math.abs(cy - ry);
+      const minDx = (w + r.w) * 0.55; // 中心距离阈值（横向）
+      const minDy = (h + r.h) * 0.55; // 中心距离阈值（纵向）
+      if (dx < minDx && dy < minDy) return true;
+    }
+    return false;
+  }
+
   // ===== 页面切换 =====
   function showPage(n){
     document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
@@ -249,9 +308,32 @@
    * ========================= */
   const PHOTO_BASE = './image/';
   const photoList = [
-    "IMG_0331.jpg","IMG_0624.jpg","IMG_0112.jpg","IMG_1624.JPG","IMG_1708.JPG","IMG_1873.JPG",
-    "IMG_2013.JPG","IMG_2015.JPG","IMG_2019.JPG","IMG_2184.jpg","IMG_2186.JPG","IMG_2027.JPG",
-    "IMG_2198.JPG","IMG_3932.JPG","IMG_3984.JPG","IMG_3994.JPG","IMG_9322.JPG","Live.JPG"
+  // ===== 你之前已有的 =====
+  "IMG_0331.jpg","IMG_0624.jpg","IMG_0112.jpg","IMG_1624.JPG","IMG_1708.JPG","IMG_1873.JPG",
+  "IMG_2013.JPG","IMG_2015.JPG","IMG_2019.JPG","IMG_2184.jpg","IMG_2186.JPG","IMG_2027.JPG",
+  "IMG_2198.JPG","IMG_3932.JPG","IMG_3984.JPG","IMG_3994.JPG","IMG_9322.JPG","Live.JPG",
+
+  // ===== 新增的 livePhoto 系列 =====
+  "livePhoto_1752290338.JPG","livePhoto_1752418468.JPG","livePhoto_1752805567.JPG",
+  "livePhoto_1752920335.JPG","livePhoto_1756553045.JPG","livePhoto_1756613710.JPG",
+  "livePhoto_1756613786.JPG","livePhoto_1756872620.JPG","livePhoto_1756952839.JPG",
+
+  // ===== 新增的 R 开头系列 =====
+  "R0002588.JPG","R0002796.JPG","R0002803.JPG","R0002810.JPG","R0002811.JPG","R0002986.JPG",
+  "R0002989.JPG","R0002998.JPG","R0003010.JPG","R0003048.jpg","R0003067.JPG","R0003089.JPG",
+  "R0003221.JPG","R0003531.JPG",
+
+  // ===== 新增的 IMG_xxxx 系列（HEIC 已转为 JPG） =====
+  "IMG_0145.jpg","IMG_0170.jpg","IMG_0171.jpg","IMG_0175.jpg","IMG_0322.jpg","IMG_0333.jpg",
+  "IMG_0582.jpg","IMG_0601.JPG","IMG_1257.PNG","IMG_1445.jpg","IMG_1451.jpg","IMG_1459.JPG",
+  "IMG_1461.JPG","IMG_1486.jpg","IMG_1487.jpg","IMG_1489.jpg","IMG_1521.jpg","IMG_1538.jpg",
+  "IMG_1541.jpg","IMG_1542.jpg","IMG_1555.jpg","IMG_1660.jpg","IMG_1672.jpg","IMG_1675.jpg",
+  "IMG_1677.jpg","IMG_1678.jpg","IMG_1679.jpg","IMG_1719.jpg","IMG_2069.JPG","IMG_2189.JPG",
+  "IMG_2215.jpg","IMG_2217.jpg","IMG_2218.jpg","IMG_2219.jpg","IMG_2274.jpg","IMG_2277.jpg",
+  "IMG_9087.jpg","IMG_9115.jpg","IMG_9138.jpg","IMG_9140.jpg","IMG_9876.jpg",
+
+  // ===== 再次出现的 livePhoto（确认不重复即可） =====
+  "livePhoto_1752290338.JPG","livePhoto_1752418468.JPG"
   ];
   let usablePhotos = [];
 
@@ -267,7 +349,7 @@
   }
 
   // —— 更密集：每拍连发 2~3 张；屏幕上限，防止卡顿 —— //
-  const MAX_PHOTOS_ON_SCREEN = 15;
+  const MAX_PHOTOS_ON_SCREEN = 25;
 
   function startPhotos(){
     stopPhotos();
@@ -298,27 +380,73 @@
   // —— 单张照片生成：降低旋转幅度 + 拉长动画时长 —— //
   function spawnPhoto(){
     if(!usablePhotos.length) return;
+
     const name = usablePhotos[Math.floor(Math.random()*usablePhotos.length)];
     const img = document.createElement('img');
     img.src = PHOTO_BASE + name;
     img.loading = 'lazy';
     img.decoding = 'async';
 
-    // ---- 改动 1: 照片尺寸缩小 ----
-    const w = 90 + Math.random()*70; // 90~160px
+    // —— 1) 尺寸：轻微随机 —— //
+    const w = 90 + Math.random()*70;    // 90~160px
     img.style.width = w + 'px';
+    const approxH = w * 0.66;           // 估一下高度用于碰撞判断即可（真实高度由浏览器算）
 
-    // ---- 改动 2: 分区生成 ----
-    const zones = [8, 40, 72]; // 左/中/右区段起点
-    const zone = zones[Math.floor(Math.random() * zones.length)];
-    img.style.left = (zone + Math.random()*16) + 'vw'; // 区段宽度16vw
-    img.style.top   = (60 + Math.random()*25) + 'vh'; // 起点在屏幕下半部分
+    // —— 2) 计算“可用区域”的像素范围（考虑左右安全边） —— //
+    const safeLeftPx  = vw2px(SAFE_MARGIN_VW);
+    const safeRightPx = vw2px(SAFE_MARGIN_VW);
+    const usableW = window.innerWidth - safeLeftPx - safeRightPx;
 
-    // ---- 保留：上升 + 慢旋转 ----
-    const dx  = (Math.random()*200 - 100) + 'px';
-    const dy  = '-100vh';
-    const rot = (Math.random()*120 - 60) + 'deg';     // 缩小到 ±60° 更自然
-    const durMs = 12000 + Math.random()*5000;         // 12~17 秒
+    const usableTopPx = vh2px(GRID_TOP_VH);
+    const usableBotPx = vh2px(GRID_BOTTOM_VH);
+    const usableH = Math.max(20, usableBotPx - usableTopPx);
+
+    // —— 3) 选择一个网格单元，并在单元内随机 —— //
+    const cell = pickCell();
+    const cellW = usableW / GRID_COLS;
+    const cellH = usableH / GRID_ROWS;
+
+    let leftPx, topPx;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 10;
+
+    do {
+      attempts++;
+
+      // 水平位置：单元内随机摆放，但要保证不越右边界
+      leftPx = safeLeftPx + cell.c * cellW + Math.random() * (cellW - w);
+      leftPx = clamp(leftPx, safeLeftPx, window.innerWidth - safeRightPx - w);
+
+      // 垂直位置：单元内随机摆放
+      topPx  = usableTopPx + cell.r * cellH + Math.random() * Math.max(8, cellH - approxH);
+
+      // 如果“太靠下”导致动画看不清，稍微往上抬一点
+      if (topPx > window.innerHeight - approxH - 20) {
+        topPx = window.innerHeight - approxH - 20;
+      }
+
+      // 如果距离最近的已经存在的太近，就再试
+    } while (attempts < MAX_ATTEMPTS && tooClose(leftPx, topPx, w, approxH));
+
+    // 标记网格占用（让这个格子一小段时间不要再来）
+    gridBusyUntil[cellIndex(cell.c, cell.r)] = Date.now() + CELL_BUSY_MS;
+
+    // 记录到“最近矩形”池子，辅助后续避让
+    pushRecent(leftPx, topPx, w, approxH);
+
+    // —— 4) 设置位置 —— //
+    img.style.left = leftPx + 'px';
+    img.style.top  = topPx  + 'px';
+
+    // —— 5) 动画：更自然的漂移与慢旋转 —— //
+    const dx  = (Math.random()*220 - 110) + 'px';
+    const dy  = '-105vh';
+    const rot = (Math.random()*100 - 50) + 'deg';       // 缩到 ±50°
+    const durMs = 12000 + Math.random()*5000;
+
+    // 随机延迟（错峰进入，避免成团）
+    const delayMs = Math.floor(Math.random() * 2000);
+    img.style.animationDelay = delayMs + 'ms';
 
     img.style.setProperty('--dx', dx);
     img.style.setProperty('--dy', dy);
@@ -326,11 +454,11 @@
     img.style.animationDuration = durMs + 'ms';
 
     img.onerror = () => img.remove();
-
     photos.appendChild(img);
-    setTimeout(()=> img.remove(), durMs + 200);
-  }
 
+    // 结束后清理
+    setTimeout(() => img.remove(), durMs + delayMs + 300);
+  }
   // 预加载完成后，才开始页面 & 动效
   preloadPhotos(photoList, (okList)=> {
     usablePhotos = okList;
