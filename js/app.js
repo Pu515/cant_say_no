@@ -66,13 +66,13 @@
   /* =========================
   * 第2页：不爱 交换位置 + 变小；爱 → 爱心屏
   * ========================= */
-  let lastSwapTs = 0; // 防抖，避免 mouseenter 后紧跟 click 连续触发两次
+  let lastSwapTs = 0; // 防抖，避免 mouseenter 后紧跟 pointerdown/click 连续触发两次
 
   function swapNo(e){
     const now = Date.now();
-    if (now - lastSwapTs < 150) { // 150ms 内不重复
-      e.preventDefault();
-      e.stopImmediatePropagation();
+    if (now - lastSwapTs < 150) {
+      e.preventDefault?.();
+      e.stopImmediatePropagation?.();
       return;
     }
     lastSwapTs = now;
@@ -90,15 +90,25 @@
 
     if (navigator.vibrate) navigator.vibrate(8);
 
-    e.preventDefault();
-    e.stopImmediatePropagation();
+    e.preventDefault?.();
+    e.stopImmediatePropagation?.();
   }
 
-  // PC：鼠标移入触发交换+缩小
+  // PC：鼠标移入触发交换+缩小（逗人用）
   noBtn.addEventListener('mouseenter', swapNo);
 
-  // PC/手机：点击触发交换+缩小
-  noBtn.addEventListener('click', swapNo);
+  // 手机/PC 主事件：pointerdown 触发交换+缩小，并强制拦截默认行为，防止误跳页
+  noBtn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    swapNo(e);
+  }, { passive: false });
+
+  // 兜底：click 仅用于拦截默认行为（不重复调用 swapNo，避免二次触发）
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  });
 
   // “爱 ❤️” 按钮：进入爱心屏
   loveBtn.addEventListener('click', () => {
