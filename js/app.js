@@ -470,7 +470,7 @@
 
   function startShootingStars(){
     stopShootingStars();
-    shootingTimer = setInterval(spawnShootingStar, 2000); // 每3秒一颗
+    shootingTimer = setInterval(spawnShootingStar, 3000); // 每3秒一颗
   }
 
   function stopShootingStars(){
@@ -487,7 +487,7 @@
     
     shootingStars.appendChild(star);
 
-    setTimeout(()=> star.remove(), 1300); // 动画结束移除
+    setTimeout(()=> star.remove(), 1500); // 动画结束移除
   }
 
   // 在 showPage(4) 时启动
