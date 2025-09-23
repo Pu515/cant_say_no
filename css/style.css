@@ -1,5 +1,4 @@
 :root{
-  /* 动态粉白渐变主题 */
   --pink1:#ffe3ee;
   --pink2:#ffd1e8;
   --pink3:#ffc2dd;
@@ -13,8 +12,7 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  /* 叠加两个渐变，做柔和流动效果 */
+  margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, Roboto, Helvetica, Arial;
   background:
     radial-gradient(1200px 800px at 50% -20%, rgba(255,182,193,.35), transparent 60%),
     linear-gradient(120deg, var(--pink1), var(--white), var(--pink2), var(--white), var(--pink3));
@@ -42,7 +40,6 @@ body{
 .subtitle{margin-top:6px; color:var(--sub); font-size:14px}
 .btns{margin-top:22px; display:flex; gap:14px; align-items:center; justify-content:center; position:relative;}
 
-/* 统一按钮尺寸 + 过渡 */
 .btn{
   min-width:120px; text-align:center;
   appearance:none; border:1px solid #ffd6ea; color:var(--text);
@@ -53,11 +50,11 @@ body{
 .btn:hover{ transform: translateY(-1px); border-color:#ff9cc2 }
 .btn:active{ transform: translateY(0) }
 .btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px #ffb3cf7a }
-.btn-love{ background: linear-gradient(180deg, #ff7d9f, var(--love)); border-color:#ff9ab6; color:white }
-.btn-love:hover{ filter:brightness(1.05) }
+
+#loveBtn:hover{ background: linear-gradient(180deg, #ff7d9f, var(--love)); border-color:#ff9ab6; color:white }
+
 .hint{margin-top:14px; text-align:center; color:#8b8b8b; font-size:12px}
 
-/* 爱心页也用粉白动态背景 */
 .love-screen{
   position:fixed; inset:0; display:none; place-items:center; 
   background:
@@ -69,7 +66,6 @@ body{
 }
 .love-wrap{ display:grid; place-items:center; text-align:center; }
 
-/* SVG 心形的尺寸和弹出动画 */
 .heart-svg{ width: 200px; height: 180px; transform: scale(1); animation: pop .8s cubic-bezier(.2, .8, .2, 1) both }
 @keyframes pop{ 0%{ transform: scale(.6);} 100%{ transform: scale(1);} }
 
@@ -84,7 +80,6 @@ body{
   to{ transform: translateY(-110vh) translateX(20px) scale(1.15); opacity:0 }
 }
 
-/* 减少动画偏好 */
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important }
 }
@@ -92,3 +87,4 @@ body{
 @media (max-width: 480px){
   .btn{ min-width:100px; padding: 14px 22px; font-size:17px }
 }
+

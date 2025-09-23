@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>恶搞弹窗</title>
+  <title>问卷调查</title>
   <link rel="stylesheet" href="./css/style.css" />
   <link rel="icon" href="./assets/favicon.svg" />
 </head>
 <body>
   <main class="modal" role="dialog" aria-modal="true" aria-labelledby="q">
-    <h1 id="q" class="title">问题：林嘉欣你是真的爱我吗？</h1>
+    <h1 id="q" class="title">林嘉欣你是真的爱我吗？</h1>
     <p class="subtitle">认真点，这是一个非常严肃的问题</p>
 
     <div class="btns" id="btns">
@@ -19,11 +19,9 @@
 
     <p class="hint">自己静下心来好好想想</p>
   </main>
-
   <!-- 爱心页面 -->
   <section class="love-screen" id="loveScreen" aria-hidden="true">
     <div class="love-wrap">
-      <!-- 用 SVG 绘制真正的爱心图形，避免出现“两颗球”的视觉 -->
       <svg class="heart-svg" viewBox="0 0 200 180" aria-hidden="true">
         <defs>
           <radialGradient id="g" cx="35%" cy="35%" r="80%">
@@ -37,7 +35,7 @@
         </defs>
         <path filter="url(#shadow)" fill="url(#g)" d="M100 170 C60 130 20 105 20 65 C20 40 38 22 62 22 C79 22 92 32 100 46 C108 32 121 22 138 22 C162 22 180 40 180 65 C180 105 140 130 100 170 Z"/>
       </svg>
-      <div class="love-text">我也爱你！❤️<div class="love-sub">（点击任意处关闭）</div></div>
+      <div class="love-text">我也爱你！宝宝<div class="love-sub">（点击任意处关闭）</div></div>
     </div>
   </section>
   <div class="floaters" id="floaters" aria-hidden="true"></div>
