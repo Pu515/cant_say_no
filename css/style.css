@@ -9,8 +9,8 @@
   --love:#ef3b5d;
   --ring:#ff8ab3;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
+*{ box-sizing:border-box }
+html,body{ height:100% }
 body{
   margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, Roboto, Helvetica, Arial;
   background:
@@ -20,6 +20,7 @@ body{
   animation: bgShift 14s ease-in-out infinite;
   color:var(--text);
   display:grid; place-items:center;
+  overflow:hidden;
 }
 @keyframes bgShift{
   0%{ background-position: 50% 0%, 0% 50% }
@@ -27,19 +28,24 @@ body{
   100%{ background-position: 50% 0%, 0% 50% }
 }
 
-.modal{
-  width:min(92vw, 560px);
+/* 卡片页（第1/2/4页容器样式） */
+section{
+  display:none;
   background:var(--card);
   border:1px solid #ffd1e8;
   border-radius:20px;
   box-shadow: 0 10px 28px rgba(0,0,0,.12);
   padding:28px 24px;
-  position:relative; overflow:hidden;
+  text-align:center;
+  width:min(92vw, 560px);
+  z-index:10;
 }
-.title{font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px}
-.subtitle{margin-top:6px; color:var(--sub); font-size:14px}
-.btns{margin-top:22px; display:flex; gap:14px; align-items:center; justify-content:center; position:relative;}
+section.active{ display:grid }
 
+h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; margin:0 }
+.hint{ margin-top:14px; text-align:center; color:#8b8b8b; font-size:12px }
+
+.btns{ margin-top:22px; display:flex; gap:14px; align-items:center; justify-content:center; position:relative; min-height:56px }
 .btn{
   min-width:120px; text-align:center;
   appearance:none; border:1px solid #ffd6ea; color:var(--text);
@@ -53,10 +59,11 @@ body{
 
 #loveBtn:hover{ background: linear-gradient(180deg, #ff7d9f, var(--love)); border-color:#ff9ab6; color:white }
 
-.hint{margin-top:14px; text-align:center; color:#8b8b8b; font-size:12px}
-
+/* —— 第3页：爱心屏（全屏覆盖，避免被 section 通用样式影响） —— */
 .love-screen{
-  position:fixed; inset:0; display:none; place-items:center; 
+  position:fixed; inset:0; width:100%; height:100%;
+  display:none; place-items:center;
+  border:0; box-shadow:none; background:transparent; /* 先清除卡片样式 */
   background:
     radial-gradient(1200px 800px at 50% -20%, rgba(255,182,193,.35), transparent 60%),
     linear-gradient(120deg, var(--pink1), var(--white), var(--pink2), var(--white), var(--pink3));
@@ -64,14 +71,13 @@ body{
   animation: bgShift 14s ease-in-out infinite;
   z-index:100; color:#b91c1c;
 }
-.love-wrap{ display:grid; place-items:center; text-align:center; }
-
-.heart-svg{ width: 200px; height: 180px; transform: scale(1); animation: pop .8s cubic-bezier(.2, .8, .2, 1) both }
+.love-wrap{ display:grid; place-items:center; text-align:center }
+.heart-svg{ width: 200px; height: 180px; transform: scale(1); animation: pop .8s cubic-bezier(.2,.8,.2,1) both }
 @keyframes pop{ 0%{ transform: scale(.6);} 100%{ transform: scale(1);} }
-
 .love-text{ margin-top:22px; font-size: clamp(18px, 2.8vw, 26px); text-align:center; font-weight:800; letter-spacing:.5px; color:#b91c1c }
 .love-sub{ font-size:12px; color:#a1a1a1; margin-top:6px }
 
+/* 第3页：心心雨容器（沿用原效果） */
 .floaters{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:120 }
 .floater{ position:absolute; font-size: 14px; opacity:.9; animation: rise 6s linear infinite }
 @keyframes rise{
@@ -80,11 +86,54 @@ body{
   to{ transform: translateY(-110vh) translateX(20px) scale(1.15); opacity:0 }
 }
 
+/* 第4页：纯烟花 + 背景漂浮小心心 + 随机照片（动态） */
+#fireworks, #floatHearts, #photos{
+  position: fixed; inset: 0; pointer-events: none; z-index: 80;
+}
+#floatHearts{ z-index:82 }
+#photos{ z-index:84 }
+
+.particle{ position:absolute; width:8px; height:8px; border-radius:50%; pointer-events:none }
+
+/* 第4页动态照片样式（动态漂移 + 旋转） */
+#photos img{
+  position:absolute; opacity:0; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.35);
+  animation: floatPhoto 9s linear forwards;
+}
+@keyframes floatPhoto{
+  0%   { transform: translate(0, 0) scale(.9) rotate(0deg); opacity:0 }
+  15%  { opacity:1 }
+  85%  { opacity:1 }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.05) rotate(var(--rot)); opacity:0 }
+}
+
+/* 触控优化 */
+#yes1, #noBtn{ touch-action: none }
+
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important }
 }
+@media (max-width: 480px){ .btn{ min-width:100px; padding:14px 22px; font-size:17px } }
 
-@media (max-width: 480px){
-  .btn{ min-width:100px; padding: 14px 22px; font-size:17px }
+/* 彩色动态文字效果 */
+.rainbow-text {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(270deg,
+    #ff4d4d, #ffaf40, #ffff66, #66ff99, #66ccff, #cc99ff, #ff66cc);
+  background-size: 1400% 1400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowFlow 8s linear infinite;
 }
 
+@keyframes rainbowFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 让“晚安 🌙”纯文字显示，不要边框和背景 */
+#page4 { background: none !important; border: none !important; box-shadow: none !important; }
+.result { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }

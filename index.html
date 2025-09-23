@@ -8,18 +8,26 @@
   <link rel="icon" href="./assets/favicon.svg" />
 </head>
 <body>
-  <main class="modal" role="dialog" aria-modal="true" aria-labelledby="q">
-    <h1 id="q" class="title">林嘉欣你是真的爱我吗？</h1>
-    <p class="subtitle">认真点，这是一个非常严肃的问题</p>
-
-    <div class="btns" id="btns">
-      <button class="btn btn-love" id="loveBtn" aria-label="爱">爱 ❤️</button>
-      <button class="btn" id="noBtn" aria-label="不爱">不爱 🙅‍♀️</button>
+  <!-- 第1页：愿意乱跑变小 -->
+  <section id="page1" class="active">
+    <h1>你愿意包容我的缺点吗？</h1>
+    <div class="btns">
+      <button class="btn btn-yes" id="yes1">不愿意 🙅‍♂️</button>
+      <button class="btn btn-no" id="no1">愿意 💕</button>
     </div>
+  </section>
 
+  <!-- 第2页：不爱交换缩小；爱进入爱心屏 -->
+  <section id="page2">
+    <h1>林嘉欣你是真的爱我吗？</h1>
+    <div class="btns" id="btns">
+      <button class="btn btn-love" id="loveBtn">爱 ❤️</button>
+      <button class="btn" id="noBtn">不爱 🙅‍♀️</button>
+    </div>
     <p class="hint">自己静下心来好好想想</p>
-  </main>
-  <!-- 爱心页面 -->
+  </section>
+
+  <!-- 第3页：爱心特效（点击任意处 → 第4页） -->
   <section class="love-screen" id="loveScreen" aria-hidden="true">
     <div class="love-wrap">
       <svg class="heart-svg" viewBox="0 0 200 180" aria-hidden="true">
@@ -35,10 +43,21 @@
         </defs>
         <path filter="url(#shadow)" fill="url(#g)" d="M100 170 C60 130 20 105 20 65 C20 40 38 22 62 22 C79 22 92 32 100 46 C108 32 121 22 138 22 C162 22 180 40 180 65 C180 105 140 130 100 170 Z"/>
       </svg>
-      <div class="love-text">我也爱你！宝宝<div class="love-sub">（点击任意处关闭）</div></div>
+      <div class="love-text">我也爱你！宝宝<div class="love-sub">（点击任意处进入下一页）</div></div>
     </div>
+    <!-- 第3页专用：下落心心雨 -->
+    <div class="floaters" id="floaters" aria-hidden="true"></div>
   </section>
-  <div class="floaters" id="floaters" aria-hidden="true"></div>
+
+  <!-- 第4页：纯烟花 + 漂浮小爱心 + 随机照片（动态） -->
+  <section id="page4">
+    <div class="result rainbow-text">晚安 🌙</div>
+  </section>
+
+  <!-- 背景动效层（第4页启用） -->
+  <div id="fireworks"></div>
+  <div id="floatHearts"></div>
+  <div id="photos"></div>
 
   <script src="./js/app.js"></script>
 </body>
