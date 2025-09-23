@@ -63,9 +63,22 @@
 
   no1.addEventListener('click', ()=> showPage(2));
 
-  /* =========================
+    /* =========================
   * 第2页：不爱 交换位置 + 变小；爱 → 爱心屏
   * ========================= */
+
+  // —— 新增：短暂屏蔽全局点击，防止换位后的抬手点到别的元素 —— //
+  let suppressNavUntil = 0;
+  function guardNav(ms = 400){ suppressNavUntil = Date.now() + ms; }
+
+  // 捕获阶段全局 click 守卫（优先于目标监听器执行）
+  document.addEventListener('click', (e) => {
+    if (Date.now() < suppressNavUntil) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true); // capture = true
+
   let lastSwapTs = 0; // 防抖，避免 mouseenter 后紧跟 pointerdown/click 连续触发两次
 
   function swapNo(e){
@@ -76,6 +89,9 @@
       return;
     }
     lastSwapTs = now;
+
+    // 先开保护：接下来 400ms 内任何 click 都被全局守卫吃掉
+    guardNav(600);
 
     // 交换 loveBtn 和 noBtn 的位置
     if (loveBtn.nextElementSibling === noBtn) {
@@ -88,30 +104,41 @@
     noBtnScale *= 0.8;
     noBtn.style.transform = `scale(${noBtnScale})`;
 
+    // 尝试把后续事件“绑”在 noBtn 上，避免目标漂移
+    if (e.pointerId && noBtn.setPointerCapture) {
+      try { noBtn.setPointerCapture(e.pointerId); } catch {}
+    }
+
     if (navigator.vibrate) navigator.vibrate(8);
 
     e.preventDefault?.();
     e.stopImmediatePropagation?.();
   }
 
-  // PC：鼠标移入触发交换+缩小（逗人用）
+  // PC：鼠标移入触发交换+缩小
   noBtn.addEventListener('mouseenter', swapNo);
 
-  // 手机/PC 主事件：pointerdown 触发交换+缩小，并强制拦截默认行为，防止误跳页
+  // 主事件：pointerdown（手机/PC都走这条）
   noBtn.addEventListener('pointerdown', (e) => {
+    // 先阻止默认，再执行交换
     e.preventDefault();
     e.stopImmediatePropagation();
     swapNo(e);
   }, { passive: false });
 
-  // 兜底：click 仅用于拦截默认行为（不重复调用 swapNo，避免二次触发）
+  // 兜底：click 仅拦截，不再重复交换（避免双触发）
   noBtn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopImmediatePropagation();
   });
 
-  // “爱 ❤️” 按钮：进入爱心屏
-  loveBtn.addEventListener('click', () => {
+  // “爱 ❤️” 按钮：进入爱心屏（同时受 suppressNavUntil 保护）
+  loveBtn.addEventListener('click', (e) => {
+    if (Date.now() < suppressNavUntil) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return;
+    }
     loveScreen.style.display = 'grid';
     loveScreen.setAttribute('aria-hidden','false');
     sprayHearts();
