@@ -470,7 +470,7 @@
 
   function startShootingStars(){
     stopShootingStars();
-    shootingTimer = setInterval(spawnShootingStar, 3000); // 每3秒一颗
+    shootingTimer = setInterval(spawnShootingStar, 6000); // 每3秒一颗
   }
 
   function stopShootingStars(){

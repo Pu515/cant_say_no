@@ -373,7 +373,7 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 /* 单颗流星样式 */
 .shooting-star {
   position: absolute;
-  width: 122px;   /* 流星长度 */
+  width: 120px;   /* 流星长度 */
   height: 4px;    /* 流星宽度 */
    /* 多层渐变：中间白亮，两边带蓝紫，尾部透明 */
   background: linear-gradient(90deg,
