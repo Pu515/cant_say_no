@@ -66,14 +66,28 @@
   /* =========================
   * 第2页：不爱 交换位置 + 变小；爱 → 爱心屏
   * ========================= */
+  let lastSwapTs = 0; // 防抖，避免 mouseenter 后紧跟 click 连续触发两次
+
   function swapNo(e){
+    const now = Date.now();
+    if (now - lastSwapTs < 150) { // 150ms 内不重复
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return;
+    }
+    lastSwapTs = now;
+
+    // 交换 loveBtn 和 noBtn 的位置
     if (loveBtn.nextElementSibling === noBtn) {
       btns.insertBefore(noBtn, loveBtn);
     } else {
       btns.insertBefore(loveBtn, noBtn);
     }
+
+    // 缩小
     noBtnScale *= 0.8;
     noBtn.style.transform = `scale(${noBtnScale})`;
+
     if (navigator.vibrate) navigator.vibrate(8);
 
     e.preventDefault();
