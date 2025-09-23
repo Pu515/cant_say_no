@@ -64,20 +64,29 @@
   no1.addEventListener('click', ()=> showPage(2));
 
   /* =========================
-   * 第2页：不爱 交换位置 + 变小；爱 → 爱心屏
-   * ========================= */
+  * 第2页：不爱 交换位置 + 变小；爱 → 爱心屏
+  * ========================= */
   function swapNo(e){
-    if (loveBtn.nextElementSibling === noBtn) btns.insertBefore(noBtn, loveBtn);
-    else                                     btns.insertBefore(loveBtn, noBtn);
-    noBtnScale *= 0.8; noBtn.style.transform = `scale(${noBtnScale})`;
+    if (loveBtn.nextElementSibling === noBtn) {
+      btns.insertBefore(noBtn, loveBtn);
+    } else {
+      btns.insertBefore(loveBtn, noBtn);
+    }
+    noBtnScale *= 0.8;
+    noBtn.style.transform = `scale(${noBtnScale})`;
     if (navigator.vibrate) navigator.vibrate(8);
-    e.preventDefault(); e.stopImmediatePropagation();
-  }
-  noBtn.addEventListener('mouseenter', swapNo);
-  noBtn.addEventListener('pointerdown', swapNo, {passive:false});
-  noBtn.addEventListener('click', swapNo);
-  noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); swapNo(e); }, {passive:false});
 
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+
+  // PC：鼠标移入触发交换+缩小
+  noBtn.addEventListener('mouseenter', swapNo);
+
+  // PC/手机：点击触发交换+缩小
+  noBtn.addEventListener('click', swapNo);
+
+  // “爱 ❤️” 按钮：进入爱心屏
   loveBtn.addEventListener('click', () => {
     loveScreen.style.display = 'grid';
     loveScreen.setAttribute('aria-hidden','false');
@@ -207,12 +216,12 @@
   }
 
   // —— 更密集：每拍连发 2~3 张；屏幕上限，防止卡顿 —— //
-  const MAX_PHOTOS_ON_SCREEN = 22;
+  const MAX_PHOTOS_ON_SCREEN = 15;
 
   function startPhotos(){
     stopPhotos();
     // 节奏更快：每 1200ms 触发一次“连发”
-    photoTimer = setInterval(spawnBurst, 1200);
+    photoTimer = setInterval(spawnBurst, 1400);
   }
   function stopPhotos(){ if(photoTimer){ clearInterval(photoTimer); photoTimer=null; } }
 
