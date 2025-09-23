@@ -16,6 +16,12 @@
   const floatHearts= $('floatHearts');// 第4页漂浮心
   const photos     = $('photos');     // 第4页动态照片
 
+  // ===== 音乐 =====
+  const bgm = new Audio('./music.m4a'); // 根目录的 music.m4a
+  bgm.preload = 'auto';
+  bgm.loop = true;
+  bgm.volume = 0.4; // 想更小就改 0.5 之类
+
   // ===== 状态 =====
   let yes1Scale = 1;
   let noBtnScale = 1;
@@ -192,12 +198,20 @@
   });
 
   // “爱 ❤️” 按钮：进入爱心屏（同时受 suppressNavUntil 保护）
+// “爱 ❤️” 按钮：进入爱心屏（同时受 suppressNavUntil 保护）+ 播放音乐
   loveBtn.addEventListener('click', (e) => {
     if (Date.now() < suppressNavUntil) {
       e.preventDefault();
       e.stopImmediatePropagation();
       return;
     }
+
+    // 播放音乐（用户手势触发，移动端可用）
+    try {
+      bgm.currentTime = 0; // 每次从头
+      bgm.play();
+    } catch {}
+
     loveScreen.style.display = 'grid';
     loveScreen.setAttribute('aria-hidden','false');
     sprayHearts();
@@ -496,16 +510,23 @@
     const target = $('page'+n);
     if (target) target.classList.add('active');
 
+    const musicIcon = document.getElementById('musicIcon');
+    if (n === 3 || n === 4) {
+      musicIcon.style.display = 'block';
+    } else {
+      musicIcon.style.display = 'none';
+    }
+
     if(n === 4){
       startFireworks();
       startFloatHearts();
       startPhotos();
-      startShootingStars();   // ← 新增
+      startShootingStars();
     } else {
       stopFireworks();
       stopFloatHearts();
       stopPhotos();
-      stopShootingStars();    // ← 新增
+      stopShootingStars();
     }
   }
   // 如果你更希望立即显示首页（不等预加载），可改成：
