@@ -57,13 +57,37 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 .btn:active{ transform: translateY(0) }
 .btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px #ffb3cf7a }
 
-#loveBtn:hover{ background: linear-gradient(180deg, #ff7d9f, var(--love)); border-color:#ff9ab6; color:white }
+/* 第二页“爱 ❤️”按钮 */
+#loveBtn:hover{ 
+  background: linear-gradient(180deg, #ff7d9f, var(--love)); 
+  border-color:#ff9ab6; 
+  color:white;
+}
+#loveBtn:active{
+  background: var(--love);
+  border-color: #e03a58;
+  color:white;
+}
+
+/* 第1页按钮：统一红色激活效果 */
+#yes1:hover,
+#no1:hover {
+  background: linear-gradient(180deg, #ff7d9f, var(--love));
+  border-color: #ff9ab6;
+  color: white;
+}
+#yes1:active,
+#no1:active {
+  background: var(--love);
+  border-color: #e03a58;
+  color: white;
+}
 
 /* —— 第3页：爱心屏（全屏覆盖，避免被 section 通用样式影响） —— */
 .love-screen{
   position:fixed; inset:0; width:100%; height:100%;
   display:none; place-items:center;
-  border:0; box-shadow:none; background:transparent; /* 先清除卡片样式 */
+  border:0; box-shadow:none; background:transparent;
   background:
     radial-gradient(1200px 800px at 50% -20%, rgba(255,182,193,.35), transparent 60%),
     linear-gradient(120deg, var(--pink1), var(--white), var(--pink2), var(--white), var(--pink3));
@@ -77,7 +101,7 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 .love-text{ margin-top:22px; font-size: clamp(18px, 2.8vw, 26px); text-align:center; font-weight:800; letter-spacing:.5px; color:#b91c1c }
 .love-sub{ font-size:12px; color:#a1a1a1; margin-top:6px }
 
-/* 第3页：心心雨容器（沿用原效果） */
+/* 第3页：心心雨容器 */
 .floaters{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:120 }
 .floater{ position:absolute; font-size: 14px; opacity:.9; animation: rise 6s linear infinite }
 @keyframes rise{
@@ -86,7 +110,7 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   to{ transform: translateY(-110vh) translateX(20px) scale(1.15); opacity:0 }
 }
 
-/* 第4页：纯烟花 + 背景漂浮小心心 + 随机照片（动态） */
+/* 第4页：烟花 + 背景漂浮心 + 随机照片 */
 #fireworks, #floatHearts, #photos{
   position: fixed; inset: 0; pointer-events: none; z-index: 80;
 }
@@ -95,10 +119,13 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 
 .particle{ position:absolute; width:8px; height:8px; border-radius:50%; pointer-events:none }
 
-/* 第4页动态照片样式（动态漂移 + 旋转） */
+/* 第4页动态照片样式 */
 #photos img{
   position:absolute; opacity:0; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.35);
   animation: floatPhoto 9s linear forwards;
+  object-fit: cover;
+  -webkit-mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,0.95), rgba(0,0,0,0.0) 100%);
+          mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,0.95), rgba(0,0,0,0.0) 100%);
 }
 @keyframes floatPhoto{
   0%   { transform: translate(0, 0) scale(.9) rotate(0deg); opacity:0 }
@@ -115,17 +142,17 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 }
 @media (max-width: 480px){ .btn{ min-width:100px; padding:14px 22px; font-size:17px } }
 
-/* 彩色动态文字效果 */
+/* 彩色动态文字效果（粉紫渐变 + 大字号） */
 .rainbow-text {
-  font-size: clamp(24px, 4vw, 36px);
-  font-weight: 900;
+  font-size: clamp(20px, 6vw, 40px);  /* 更大字号 */
+  font-weight: 600;
   text-align: center;
   background: linear-gradient(270deg,
-    #ff4d4d, #ffaf40, #ffff66, #66ff99, #66ccff, #cc99ff, #ff66cc);
-  background-size: 1400% 1400%;
+    #ffb6c1, #ff69b4, #ff1493, #c71585);
+  background-size: 600% 600%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rainbowFlow 8s linear infinite;
+  animation: rainbowFlow 10s ease infinite;
 }
 
 @keyframes rainbowFlow {
@@ -134,6 +161,17 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   100% { background-position: 0% 50%; }
 }
 
-/* 让“晚安 🌙”纯文字显示，不要边框和背景 */
-#page4 { background: none !important; border: none !important; box-shadow: none !important; }
-.result { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }
+/* 去掉第4页的卡片样式，只保留纯文字
+#page4 {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.result {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin: 0;
+} */
