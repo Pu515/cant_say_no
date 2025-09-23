@@ -445,7 +445,7 @@
     const durMs = 12000 + Math.random()*5000;
 
     // 随机延迟（错峰进入，避免成团）
-    const delayMs = Math.floor(Math.random() * 2000);
+    const delayMs = Math.floor(Math.random() * 1000);
     img.style.animationDelay = delayMs + 'ms';
 
     img.style.setProperty('--dx', dx);
@@ -465,9 +465,52 @@
     // 初始化首页
     showPage(1);
   });
+  const shootingStars = document.getElementById('shootingStars');
+  let shootingTimer = null;
 
+  function startShootingStars(){
+    stopShootingStars();
+    shootingTimer = setInterval(spawnShootingStar, 2000); // 每3秒一颗
+  }
+
+  function stopShootingStars(){
+    if(shootingTimer){ clearInterval(shootingTimer); shootingTimer=null; }
+  }
+
+  function spawnShootingStar(){
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    
+    // 随机生成起点（顶部区域）
+    star.style.top = rand(0, 40) + 'vh';   // 0~40% 高度
+    star.style.left = rand(60, 100) + 'vw'; // 右侧生成
+    
+    shootingStars.appendChild(star);
+
+    setTimeout(()=> star.remove(), 1300); // 动画结束移除
+  }
+
+  // 在 showPage(4) 时启动
+  function showPage(n){
+    document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
+    const target = $('page'+n);
+    if (target) target.classList.add('active');
+
+    if(n === 4){
+      startFireworks();
+      startFloatHearts();
+      startPhotos();
+      startShootingStars();   // ← 新增
+    } else {
+      stopFireworks();
+      stopFloatHearts();
+      stopPhotos();
+      stopShootingStars();    // ← 新增
+    }
+  }
   // 如果你更希望立即显示首页（不等预加载），可改成：
   // showPage(1);
   // preloadPhotos(photoList, (okList)=> { usablePhotos = okList; });
 
+  
 })();
