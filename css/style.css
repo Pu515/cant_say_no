@@ -101,7 +101,8 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 .love-wrap{ display:grid; place-items:center; text-align:center }
 
 .heart-svg{
-  width: 200px; height: 180px;
+  width: 200px; 
+  height: 214px;
   transform-origin: 50% 60%;
   transform: scale(1);
   filter: drop-shadow(0 10px 14px rgba(239,59,93,.25));
@@ -118,7 +119,7 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   100% { transform: scale(1.08) }
 }
 
-.love-text{ margin-top:22px; font-size: clamp(18px, 2.8vw, 26px); text-align:center; font-weight:800; letter-spacing:.5px; color:#b91c1c }
+.love-text{ margin-top:15px; font-size: clamp(18px, 2.8vw, 26px); text-align:center; font-weight:800; letter-spacing:.5px; color:#b91c1c }
 .love-sub{ font-size:12px; color:#a1a1a1; margin-top:6px }
 
 /* 第3页：心心雨容器 */
@@ -132,7 +133,6 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 
 /* —— 倒计时行 —— */
 .together-line{
-  margin-top: 18px;
   font-size: clamp(22px, 3.6vw, 34px);
   font-weight: 800;
   letter-spacing: .5px;
