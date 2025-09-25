@@ -250,10 +250,11 @@
       const dy  = Math.sin(ang) * r * 0.92;
       const rot = (Math.random()*80 - 40) + 'deg';
 
+      // 第一段：猛爆（边炸边淡出）
       const blast = m.animate(
         [
           { transform: 'translate(0,0) scale(0.86)', opacity: 1,   filter:'blur(0px)' },
-          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0.92, filter:'blur(0.2px)' }
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0.4, filter:'blur(0.4px)' }
         ],
         { duration: BLAST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
       );
