@@ -50,10 +50,10 @@
     if (target) target.classList.add('active');
 
     if(n === 4){
-      startFireworks();
-      startFloatHearts();
-      startPhotos();
-      startShootingStars();
+      setTimeout(startFireworks, 800);
+      setTimeout(startFloatHearts, 1200);
+      setTimeout(startPhotos, 1800);
+      setTimeout(startShootingStars, 2000);
 
       // —— 取消卡片弹入动画：首帧直接可见 —— //
       requestAnimationFrame(() => {
