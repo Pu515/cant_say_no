@@ -450,7 +450,7 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   will-change: transform, opacity;
 }
 #page4 .goodnight-card.enter {
-  animation: cardPopIn .40s cubic-bezier(.22,1,.36,1) both;
+  animation: cardPopIn .15s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes cardPopIn {
   0%   { transform: scale(0.90) translateY(10px); opacity: 0; }
