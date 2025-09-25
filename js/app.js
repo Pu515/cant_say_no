@@ -143,6 +143,36 @@
     });
   }
 
+  // —— 手机端预热第4页，降低切换卡顿（最小改动版）——
+  function prewarmPage4(){
+    const p4   = document.getElementById('page4');
+    const card = document.querySelector('#page4 .goodnight-card');
+    const txt  = document.querySelector('#page4 .rainbow-text');
+    if (!p4 || !card || !txt) return;
+
+    // 记录原状态
+    const prevDisplay = p4.style.display;
+    const prevVis     = p4.style.visibility;
+
+    // 短暂显示但不可见，让浏览器提前完成布局/栅格化
+    p4.style.display = 'grid';
+    p4.style.visibility = 'hidden';
+
+    // 让 GPU 先分配合成层
+    card.style.willChange = 'transform, opacity, filter';
+    txt.style.willChange  = 'transform, opacity, filter';
+    card.style.transform  = 'translateZ(0) scale(1)';
+    txt.style.transform   = 'translateZ(0)';
+
+    // 强制一次布局+绘制
+    p4.getBoundingClientRect();
+    card.offsetWidth;
+
+    // 还原
+    p4.style.display   = prevDisplay || '';
+    p4.style.visibility= prevVis || '';
+  }
+
   async function smoothToPage4(options = {}) {
     const {
       explodeTotal = 1600,  // 爆炸总时长 = 你的 BLAST_DUR + DRIFT_DUR
@@ -305,6 +335,8 @@
     // 隐藏“我也爱你！宝宝”，显示天数（占据同样位置）
     const loveLine = $('loveLine');
     const line = $('togetherLine');
+    // 👉 在这里偷偷预热第4页卡片
+    prewarmPage4();
     if (loveLine) loveLine.style.display='none';
     if (line){
       line.hidden=false;
@@ -314,8 +346,7 @@
       const days = daysSince(2025,5,20);
       await countUpTo(days);
 
-      // 👉 在这里偷偷预热第4页卡片
-      document.querySelector('#page4 .goodnight-card')?.offsetWidth;
+      
     }
 
     loveStage = 1; // 等待第二次点击
