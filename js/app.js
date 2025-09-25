@@ -52,8 +52,8 @@
     if(n === 4){
       setTimeout(startFireworks, 800);
       setTimeout(startFloatHearts, 1200);
-      setTimeout(startPhotos, 1800);
-      setTimeout(startShootingStars, 2000);
+      setTimeout(startPhotos, 1500);
+      setTimeout(startShootingStars, 1800);
 
       // —— 取消卡片弹入动画：首帧直接可见 —— //
       requestAnimationFrame(() => {
@@ -250,17 +250,22 @@
       const dy  = Math.sin(ang) * r * 0.92;
       const rot = (Math.random()*80 - 40) + 'deg';
 
-      // 第一段：猛爆（边炸边淡出）
-      const blast = m.animate(
-        [
-          { transform: 'translate(0,0) scale(0.86)', opacity: 1,   filter:'blur(0px)' },
-          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0, filter:'blur(0.4px)' }
-        ],
-        { duration: BLAST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
-      );
+    // 最小改动 & 兼容微信：只用 transform/opacity、双保险移除
+    m.style.willChange = 'transform,opacity';
+    m.style.transform  = 'translate3d(0,0,0)';    // 强制合成层
+    // 不要在大量粒子上用 filter（iOS WebView 代价很高）
+    const blast = m.animate(
+      [
+        { transform: 'translate3d(0,0,0) scale(0.86)', opacity: 1 },
+        { transform: `translate3d(${dx}px, ${dy}px, 0) rotate(${rot}) scale(1.06)`, opacity: 0.01 }
+      ],
+      { duration: BLAST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
+    );
 
-      // 爆炸段结束就移除元素（不再进入漂移段）
-      blast.finished.then(() => m.remove());
+    // 双保险：onfinish + setTimeout（微信里有时不会触发 finished）
+    const kill = () => { m.remove(); };
+    blast.onfinish = kill;
+    setTimeout(kill, BLAST_DUR + 80);
     }
 
     (async () => {
