@@ -1,402 +1,226 @@
 :root{
-  --pink1:#ffe3ee;
-  --pink2:#ffd1e8;
-  --pink3:#ffc2dd;
-  --white:#ffffff;
-  --card:#fff9fbf2;
-  --text:#3a3a3a;
-  --sub:#6b6b6b;
-  --love:#ef3b5d;
-  --ring:#ff8ab3;
+  --pink1:#ffe3ee; --pink2:#ffd1e8; --pink3:#ffc2dd; --white:#ffffff;
+  --card:#fff9fbf2; --text:#3a3a3a; --sub:#6b6b6b; --love:#ef3b5d; --ring:#ff8ab3;
 }
 *{ box-sizing:border-box }
 html,body{ height:100% }
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, Roboto, Helvetica, Arial;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-
-  /* 柔和的粉紫渐变 + 层叠效果 */
+body{
+  margin:0;
+  font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,Roboto,Helvetica,Arial;
+  height:100%; display:grid; place-items:center; overflow:hidden;
   background:
     radial-gradient(1000px 800px at 50% -20%, rgba(255, 192, 203, 0.35), transparent 50%),
     linear-gradient(120deg, #ffe3ee, #ffffff, #f3d1f4, #ffffff, #ffd1e8);
-  background-size: 200% 200%, 200% 200%;
-
-  /* 动态流动，速度放慢 */
-  animation: softFlow 15s ease-in-out infinite;
+  background-size:200% 200%,200% 200%;
+  animation:softFlow 15s ease-in-out infinite;
+}
+@keyframes softFlow{
+  0%{ background-position:50% 0%, 0% 50% }
+  50%{ background-position:50% 100%, 100% 50% }
+  100%{ background-position:50% 0%, 0% 50% }
 }
 
-@keyframes softFlow {
-  0%   { background-position: 50% 0%, 0% 50%; }
-  50%  { background-position: 50% 100%, 100% 50%; }
-  100% { background-position: 50% 0%, 0% 50%; }
-}
 /* 卡片页（第1/2/4页容器样式） */
 section{
-  display:none;
-  background:var(--card);
-  border:1px solid #ffd1e8;
-  border-radius:20px;
-  box-shadow: 0 10px 28px rgba(0,0,0,.12);
-  padding:28px 24px;
-  text-align:center;
-  width:min(92vw, 560px);
-  z-index:10;
+  display:none; background:var(--card); border:1px solid #ffd1e8; border-radius:20px;
+  box-shadow:0 10px 28px rgba(0,0,0,.12); padding:28px 24px; text-align:center; width:min(92vw,560px); z-index:10;
 }
 section.active{ display:grid }
 
-h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; margin:0 }
+h1{ font-size:clamp(20px,3.4vw,28px); font-weight:800; letter-spacing:.2px; margin:0 }
 .hint{ margin-top:14px; text-align:center; color:#8b8b8b; font-size:12px }
 
 .btns{ margin-top:22px; display:flex; gap:14px; align-items:center; justify-content:center; position:relative; min-height:56px }
 .btn{
-  min-width:120px; text-align:center;
-  appearance:none; border:1px solid #ffd6ea; color:var(--text);
-  background:#fff; padding:12px 20px; border-radius:12px; cursor:pointer; font-weight:700; font-size:16px;
+  min-width:120px; text-align:center; appearance:none; border:1px solid #ffd6ea; color:var(--text); background:#fff;
+  padding:12px 20px; border-radius:12px; cursor:pointer; font-weight:700; font-size:16px;
   transition: transform .18s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
-  box-shadow: 0 4px 12px rgba(255,105,135,.15);
+  box-shadow:0 4px 12px rgba(255,105,135,.15);
 }
 .btn:hover{ transform: translateY(-1px); border-color:#ff9cc2 }
 .btn:active{ transform: translateY(0) }
-.btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px #ffb3cf7a }
+.btn:focus-visible{ outline:none; box-shadow:0 0 0 3px #ffb3cf7a }
 
-/* 第二页“爱 ❤️”按钮 */
-#loveBtn:hover{ 
-  background: linear-gradient(180deg, #ff7d9f, var(--love)); 
-  border-color:#ff9ab6; 
-  color:white;
-}
-#loveBtn:active{
-  background: var(--love);
-  border-color: #e03a58;
-  color:white;
-}
+#loveBtn:hover{ background:linear-gradient(180deg,#ff7d9f,var(--love)); border-color:#ff9ab6; color:white }
+#loveBtn:active{ background:var(--love); border-color:#e03a58; color:white }
+#yes1:hover,#no1:hover{ background:linear-gradient(180deg,#ff7d9f,var(--love)); border-color:#ff9ab6; color:white }
+#yes1:active,#no1:active{ background:var(--love); border-color:#e03a58; color:white }
 
-/* 第1页按钮：统一红色激活效果 */
-#yes1:hover,
-#no1:hover {
-  background: linear-gradient(180deg, #ff7d9f, var(--love));
-  border-color: #ff9ab6;
-  color: white;
-}
-#yes1:active,
-#no1:active {
-  background: var(--love);
-  border-color: #e03a58;
-  color: white;
-}
-
-/* —— 第3页：爱心屏（全屏覆盖，避免被 section 通用样式影响） —— */
+/* —— 第3页：爱心屏（全屏覆盖） —— */
 .love-screen{
-  position:fixed; inset:0; width:100%; height:100%;
-  display:none; place-items:center;
-  border:0; box-shadow:none; background:transparent;
+  position:fixed; inset:0; width:100%; height:100%; display:none; place-items:center;
+  border:0; box-shadow:none; background:transparent; z-index:100; color:#b91c1c;
   background:
     radial-gradient(1200px 800px at 50% -20%, rgba(255,182,193,.35), transparent 60%),
     linear-gradient(120deg, var(--pink1), var(--white), var(--pink2), var(--white), var(--pink3));
-  background-size: 200% 200%, 200% 200%;
-  animation: bgShift 14s ease-in-out infinite;
-  z-index:100; color:#b91c1c;
+  background-size:200% 200%, 200% 200%;
+  animation:bgShift 14s ease-in-out infinite;
+}
+@keyframes bgShift{
+  0%{ background-position:50% 0%, 0% 50% }
+  50%{ background-position:50% 100%, 100% 50% }
+  100%{ background-position:50% 0%, 0% 50% }
 }
 .love-wrap{ display:grid; place-items:center; text-align:center }
-.heart-svg{ width: 200px; height: 180px; transform: scale(1); animation: pop .8s cubic-bezier(.2,.8,.2,1) both }
+
+/* 单颗心（果冻感 + 轻柔阴影） */
+.heart-svg{
+  width:200px; height:180px;
+  transform-origin:50% 60%;
+  transform:scale(1);
+  animation:pop .8s cubic-bezier(.2,.8,.2,1) both;
+  filter: drop-shadow(0 14px 22px rgba(239,59,93,.25));
+}
 @keyframes pop{ 0%{ transform: scale(.6);} 100%{ transform: scale(1);} }
-.love-text{ margin-top:22px; font-size: clamp(18px, 2.8vw, 26px); text-align:center; font-weight:800; letter-spacing:.5px; color:#b91c1c }
+
+/* shine 轻微漂浮（静态场景也显得有生命力） */
+.heart-shine{ transform-origin:50% 50%; animation: shineFloat 3.6s ease-in-out infinite }
+@keyframes shineFloat{
+  0%{ transform: translate(0,0) scale(1) rotate(0deg); opacity:.95 }
+  50%{ transform: translate(1px,-1px) scale(1.04) rotate(-3deg); opacity:.85 }
+  100%{ transform: translate(0,0) scale(1) rotate(0deg); opacity:.95 }
+}
+
+/* 点击时的果冻弹跳 */
+@keyframes jellyPop {
+  0%   { transform: scale(1) }
+  18%  { transform: scale(0.96, 0.90) }  /* squash */
+  42%  { transform: scale(1.18, 1.06) }  /* stretch */
+  70%  { transform: scale(1.04, 0.99) }
+  100% { transform: scale(1.08) }
+}
+
+/* 文案与倒计时行 */
+.love-text{ margin-top:22px; font-size:clamp(18px,2.8vw,26px); font-weight:800; letter-spacing:.5px; color:#b91c1c }
 .love-sub{ font-size:12px; color:#a1a1a1; margin-top:6px }
 
-/* 第3页：心心雨容器 */
+.together-line{
+  margin-top:22px;
+  font-size: clamp(22px, 3.6vw, 34px);
+  font-weight: 800; letter-spacing:.5px; color:#b91c1c;
+  opacity:0; transform: translateY(8px) scale(.98);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.together-line.show{ opacity:1; transform: translateY(0) scale(1) }
+#daysNum {
+  font-size: 2em;                   /* 保持放大 */
+  font-weight: 900;
+  color: #ff5b7c;                   /* 桃心主色（可调 #ef3b5d / #ff7da3） */
+  background: linear-gradient(145deg, #ff8fa3, #ff5b7c, #e7385d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* 果冻质感：内阴影+发光 */
+  text-shadow:
+    0 2px 6px rgba(255, 92, 120, 0.5),   /* 外部柔光 */
+    0 -1px 2px rgba(255, 255, 255, 0.6), /* 顶部高光 */
+    0 3px 3px rgba(0, 0, 0, 0.25);       /* 底部立体阴影 */
+
+  /* 轻微果冻弹性动画（数字变化时更Q弹） */
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+#daysNum.jelly {
+  animation: jellyPulse 0.6s ease;
+}
+
+@keyframes jellyPulse {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.2, 0.9); }
+  50%  { transform: scale(0.9, 1.1); }
+  75%  { transform: scale(1.05, 0.95); }
+  100% { transform: scale(1); }
+}
+
+/* 第3页：心心雨 */
 .floaters{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:120 }
-.floater{ position:absolute; font-size: 14px; opacity:.9; animation: rise 6s linear infinite }
+.floater{ position:absolute; font-size:14px; opacity:.9; animation: rise 6s linear infinite }
 @keyframes rise{
   from{ transform: translateY(20vh) translateX(0) scale(.9); opacity:0 }
   10%{ opacity:.9 }
   to{ transform: translateY(-110vh) translateX(20px) scale(1.15); opacity:0 }
 }
 
-/* 第4页：烟花 + 背景漂浮心 + 随机照片 */
-#fireworks, #floatHearts, #photos{
-  position: fixed; inset: 0; pointer-events: none; z-index: 80;
-}
-#floatHearts{ z-index:82 }
-#photos{ z-index:84 }
-
+/* 第4页、玻璃卡片、流星、其余：保持你原有样式（未改动） */
+#fireworks, #floatHearts, #photos{ position:fixed; inset:0; pointer-events:none; z-index:80 }
+#floatHearts{ z-index:82 } #photos{ z-index:84 }
 .particle{ position:absolute; width:8px; height:8px; border-radius:50%; pointer-events:none }
-
-/* 第4页动态照片样式 */
 #photos img{
   position:absolute; opacity:0; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.35);
-  animation: floatPhoto 9s linear forwards;
-  object-fit: cover;
-  -webkit-mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,0.95), rgba(0,0,0,0.0) 100%);
-          mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,0.95), rgba(0,0,0,0.0) 100%);
+  animation: floatPhoto 9s linear forwards; object-fit:cover;
+  -webkit-mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,.95), rgba(0,0,0,0) 100%);
+          mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,.95), rgba(0,0,0,0) 100%);
 }
 @keyframes floatPhoto{
-  0%   { transform: translate(0, 0) scale(.9) rotate(0deg); opacity:0 }
-  15%  { opacity:1 }
-  85%  { opacity:1 }
-  100% { transform: translate(var(--dx), var(--dy)) scale(1.05) rotate(var(--rot)); opacity:0 }
+  0%{ transform: translate(0,0) scale(.9) rotate(0deg); opacity:0 }
+  15%{ opacity:1 }
+  85%{ opacity:1 }
+  100%{ transform: translate(var(--dx), var(--dy)) scale(1.05) rotate(var(--rot)); opacity:0 }
 }
-
-/* 触控优化 */
-#yes1, #noBtn{ touch-action: none }
-
-@media (prefers-reduced-motion: reduce){
-  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important }
-}
+#yes1, #noBtn{ touch-action:none }
+@media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important } }
 @media (max-width: 480px){ .btn{ min-width:100px; padding:14px 22px; font-size:17px } }
 
-/* 彩色动态文字效果（粉紫渐变 + 大字号） */
-.rainbow-text {
+.rainbow-text{
   font-size: clamp(22px, 7vw, 46px);
-  font-weight: 900;
-  text-align: center;
-
-  /* 保持渐变填充 */
-  background: linear-gradient(270deg,
-    #ffb6c1, #ff69b4, #ff8fd1, #d98bff, #b565f2);
-  background-size: 600% 600%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-weight:900; text-align:center;
+  background:linear-gradient(270deg,#ffb6c1,#ff69b4,#ff8fd1,#d98bff,#b565f2);
+  background-size:600% 600%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   animation: rainbowFlow 12s ease infinite, glowPulse 6s ease-in-out infinite;
-  
-  /* 初始光晕 */
-  text-shadow:
-    0 0 8px rgba(255, 182, 193, 0.7),
-    0 0 14px rgba(255, 105, 180, 0.6),
-    0 0 24px rgba(221, 160, 221, 0.5);
+  text-shadow:0 0 8px rgba(255,182,193,.7),0 0 14px rgba(255,105,180,.6),0 0 24px rgba(221,160,221,.5);
 }
+@keyframes rainbowFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 6px rgba(255,182,193,.6),0 0 12px rgba(255,105,180,.5),0 0 20px rgba(221,160,221,.4)}50%{text-shadow:0 0 14px rgba(255,182,193,.9),0 0 24px rgba(255,105,180,.8),0 0 36px rgba(221,160,221,.7)}}
 
-/* 渐变流动 */
-@keyframes rainbowFlow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* 光晕呼吸效果 */
-@keyframes glowPulse {
-  0%, 100% {
-    text-shadow:
-      0 0 6px rgba(255, 182, 193, 0.6),
-      0 0 12px rgba(255, 105, 180, 0.5),
-      0 0 20px rgba(221, 160, 221, 0.4);
-  }
-  50% {
-    text-shadow:
-      0 0 14px rgba(255, 182, 193, 0.9),
-      0 0 24px rgba(255, 105, 180, 0.8),
-      0 0 36px rgba(221, 160, 221, 0.7);
-  }
-}
-@keyframes rainbowFlow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* 第4页容器在所有特效上面 */
-#page4{
-  position: relative;
-  z-index: 300;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  /* display: grid; */
-  place-items: center;
-}
-
-/* 玻璃牌容器：本体不涂底色，所有视觉放到伪元素 */
-#page4 .goodnight-card{
-  position: relative;
-  z-index: 310;
-  padding: 22px 40px;
-  border-radius: 24px;
-  background: transparent;   /* 本体透明，避免盖字 */
-}
-
-/* 玻璃层（伪元素放在下面一层） */
+#page4{ position:relative; z-index:300; background:none !important; border:none !important; box-shadow:none !important; place-items:center }
+#page4 .goodnight-card{ position:relative; z-index:310; padding:22px 40px; border-radius:24px; background:transparent }
 #page4 .goodnight-card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  z-index:0;
-  /* 玻璃拟态：半透明+磨砂 */
-  background: rgba(255,255,255,0.16);
-  backdrop-filter: blur(14px) saturate(160%) contrast(110%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%) contrast(110%);
-  /* 柔和投影 */
-  box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+  content:""; position:absolute; inset:0; border-radius:inherit; z-index:0;
+  background: rgba(255,255,255,0.16); backdrop-filter: blur(14px) saturate(160%) contrast(110%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%) contrast(110%); box-shadow:0 18px 40px rgba(0,0,0,0.22);
 }
-
-/* 渐变描边（粉→紫），不覆盖内容区域 */
 #page4 .goodnight-card::after{
-  content:"";
-  position:absolute;
-  inset:-1px;                /* 边框厚度 */
-  border-radius:inherit;
-  z-index:0;
+  content:""; position:absolute; inset:-1px; border-radius:inherit; z-index:0;
   background: linear-gradient(135deg,#ff7db1,#ff8bd5,#d899ff,#b380ff);
-  /* 用遮罩把中间挖空，只保留边 */
-  -webkit-mask: 
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; /* Safari/Chromium */
-          mask-composite: exclude; /* 其他实现 */
-  padding:1px;               /* 和 inset 配合形成细边 */
-  opacity:.85;
-}
-
-/* 文字放在玻璃之上 */
-#page4 .goodnight-card .rainbow-text{
-  position: relative;
-  z-index: 1;                /* 盖住 ::before/::after */
-  font-size: clamp(24px, 7vw, 48px);
-  font-weight: 900;
-  text-align: center;
-
-  /* 渐变填充 + 流动 + 呼吸光晕（你之前喜欢的效果保留） */
-  background: linear-gradient(270deg,#ffb6c1,#ff69b4,#ff8fd1,#d98bff,#b565f2);
-  background-size: 600% 600%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: rainbowFlow 12s ease infinite, glowPulse 6s ease-in-out infinite;
-
-  text-shadow:
-    0 0 8px rgba(255,182,193,.75),
-    0 0 16px rgba(255,105,180,.6),
-    0 0 26px rgba(221,160,221,.5);
-}
-
-/* 你已有的动画可复用 */
-@keyframes rainbowFlow {
-  0% { background-position: 0% 50% }
-  50%{ background-position: 100% 50% }
-  100%{ background-position: 0% 50% }
-}
-@keyframes glowPulse {
-  0%,100%{
-    text-shadow:
-      0 0 6px rgba(255,182,193,.6),
-      0 0 12px rgba(255,105,180,.5),
-      0 0 20px rgba(221,160,221,.4);
-  }
-  50%{
-    text-shadow:
-      0 0 14px rgba(255,182,193,.9),
-      0 0 24px rgba(255,105,180,.8),
-      0 0 36px rgba(221,160,221,.7);
-  }
-}
-
-
-
-
-/* ========== 第1页 & 第2页：玻璃拟态卡片 ========== */
-#page1, #page2 {
-  position: relative;                 /* 让 z-index 与伪元素生效 */
-  background: transparent !important; /* 去掉原白卡底色 */
-  border: none !important;
-  box-shadow: none !important;
-  overflow: visible;                  /* 给柔和投影留空间 */
-}
-
-/* 玻璃层：半透明 + 磨砂 + 柔和阴影（不挡点击） */
-#page1::before, #page2::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;                /* 与原 section 圆角一致 */
-  pointer-events: none;               /* 不拦截点击 */
-  background: rgba(255,255,255,0.16);
-  backdrop-filter: blur(14px) saturate(160%) contrast(110%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%) contrast(110%);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.22);
-  z-index: 0;
-}
-
-/* 粉→紫 渐变描边（只画边，不盖中间内容） */
-#page1::after, #page2::after {
-  content: "";
-  position: absolute;
-  inset: -1px;                        /* 边框厚度 */
-  border-radius: 20px;
-  pointer-events: none;
-  z-index: 0;
-  background: linear-gradient(135deg, #ff7db1, #ff8bd5, #d899ff, #b380ff);
-  /* 利用遮罩把中间挖空，只保留边框 */
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  padding: 1px;
-  opacity: .9;
+  -webkit-mask-composite: xor; mask-composite: exclude; padding:1px; opacity:.85;
 }
+#page4 .goodnight-card .rainbow-text{ position:relative; z-index:1; font-size:clamp(24px,7vw,48px); font-weight:900 }
 
-/* 把内容抬到玻璃上方，确保清晰可见与可交互 */
-#page1 > *, #page2 > * {
-  position: relative;
-  z-index: 1;
+#page1,#page2{ position:relative; background:transparent !important; border:none !important; box-shadow:none !important; overflow:visible }
+#page1::before,#page2::before{
+  content:""; position:absolute; inset:0; border-radius:20px; pointer-events:none;
+  background:rgba(255,255,255,0.16); backdrop-filter:blur(14px) saturate(160%) contrast(110%); -webkit-backdrop-filter:blur(14px) saturate(160%) contrast(110%);
+  box-shadow:0 18px 40px rgba(0,0,0,0.22); z-index:0;
 }
-
-/* 让按钮在玻璃风格下更“浮”一点（可选） */
-#page1 .btn, #page2 .btn {
-  background: rgba(255,255,255,0.75);
-  border-color: rgba(255,255,255,0.6);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+#page1::after,#page2::after{
+  content:""; position:absolute; inset:-1px; border-radius:20px; pointer-events:none; z-index:0;
+  background:linear-gradient(135deg,#ff7db1,#ff8bd5,#d899ff,#b380ff);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; padding:1px; opacity:.9;
 }
-#page1 .btn:hover, #page2 .btn:hover {
-  background: linear-gradient(180deg, #ff8fb8, var(--love));
-  color: #fff;
-  border-color: #ff9ab6;
+#page1 > *,#page2 > *{ position:relative; z-index:1 }
+#page1 .btn,#page2 .btn{ background:rgba(255,255,255,.75); border-color:rgba(255,255,255,.6); box-shadow:0 6px 16px rgba(0,0,0,.15); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px) }
+#page1 .btn:hover,#page2 .btn:hover{ background:linear-gradient(180deg,#ff8fb8,var(--love)); color:#fff; border-color:#ff9ab6 }
+#page1 .btn:active,#page2 .btn:active{ background:var(--love); color:#fff; border-color:#e03a58 }
+
+/* 流星 */
+#shootingStars{ position:fixed; inset:0; pointer-events:none; z-index:85 }
+.shooting-star{
+  position:absolute; width:120px; height:4px;
+  background:linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(200,220,255,0.9) 40%, rgba(180,160,255,0.7) 70%, rgba(255,255,255,0) 100%);
+  opacity:.9; border-radius:50%; transform:rotate(-45deg); animation:shoot 1.5s linear forwards; filter:drop-shadow(0 0 6px white);
 }
-#page1 .btn:active, #page2 .btn:active {
-  background: var(--love);
-  color: #fff;
-  border-color: #e03a58;
+@keyframes shoot{ from{ transform:translate(0,0) rotate(-45deg); opacity:1 } to{ transform:translate(-70vw,70vh) rotate(-45deg); opacity:0 } }
+
+.puff-heart {
+  position: fixed; left: 0; top: 0; width: 200px; height: 180px; z-index: 240; pointer-events:none;
+  filter: drop-shadow(0 10px 12px rgba(239,59,93,.28));
 }
-
-
-
-/* 流星容器 */
-#shootingStars {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 85; /* 在照片和烟花之上 */
+.micro-heart {
+  position: fixed; font-size: 12px; z-index: 245; pointer-events: none; will-change: transform, opacity;
 }
-
-/* 单颗流星样式 */
-.shooting-star {
-  position: absolute;
-  width: 120px;   /* 流星长度 */
-  height: 4px;    /* 流星宽度 */
-   /* 多层渐变：中间白亮，两边带蓝紫，尾部透明 */
-  background: linear-gradient(90deg,
-    rgba(255,255,255,1) 0%,
-    rgba(200,220,255,0.9) 40%,
-    rgba(180,160,255,0.7) 70%,
-    rgba(255,255,255,0) 100%
-  );
-  
-  opacity: 0.9;
-  border-radius: 50%;
-  transform: rotate(-45deg); /* 默认斜向 */
-  animation: shoot 1.5s linear forwards;
-  filter: drop-shadow(0 0 6px white);
-}
-
-@keyframes shoot {
-  from {
-    transform: translate(0, 0) rotate(-45deg);
-    opacity: 1;
-  }
-  to {
-    transform: translate(-70vw, 70vh) rotate(-45deg); /* 左下划过 */
-    opacity: 0;
-  }
+.fade-veil {
+  position: fixed; inset:0; background:#fff; opacity:0; z-index: 230; pointer-events:none;
 }
