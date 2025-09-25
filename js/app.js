@@ -313,6 +313,9 @@
       // 计天（从 2025/05/20）
       const days = daysSince(2025,5,20);
       await countUpTo(days);
+
+      // 👉 在这里偷偷预热第4页卡片
+      document.querySelector('#page4 .goodnight-card')?.offsetWidth;
     }
 
     loveStage = 1; // 等待第二次点击
