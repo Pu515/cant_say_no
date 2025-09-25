@@ -254,7 +254,7 @@
       const blast = m.animate(
         [
           { transform: 'translate(0,0) scale(0.86)', opacity: 1,   filter:'blur(0px)' },
-          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0, filter:'blur(0.4px)' }
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0.1, filter:'blur(0.4px)' }
         ],
         { duration: BLAST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
       );
