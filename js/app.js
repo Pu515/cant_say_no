@@ -45,10 +45,43 @@
 
   // 切页
   function showPage(n){
-    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-    const t = $('page'+n); if(t) t.classList.add('active');
-    if(n===4){ startFireworks(); startFloatHearts(); startPhotos(); startShootingStars(); }
-    else { stopFireworks(); stopFloatHearts(); stopPhotos(); stopShootingStars(); }
+    document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
+    const target = $('page'+n);
+    if (target) target.classList.add('active');
+
+    if(n === 4){
+      startFireworks();
+      startFloatHearts();
+      startPhotos();
+      startShootingStars();
+
+      requestAnimationFrame(() => {
+        const card = document.querySelector('#page4 .goodnight-card');
+        const txt  = document.querySelector('#page4 .rainbow-text');
+        if (card) card.classList.add('enter');
+
+        if (txt) {
+          // 永久果冻质感
+          txt.classList.add('gel');
+
+          // 一次性的“慢慢弹入”
+          txt.classList.remove('jelly-in'); // 重置
+          void txt.offsetWidth;
+          txt.classList.add('jelly-in');
+
+          // 持续的轻柔律动（等入场结束后再开始更自然）
+          setTimeout(() => {
+            txt.classList.add('jelly-soft');
+          }, 800);
+        }
+      });
+
+    } else {
+      stopFireworks();
+      stopFloatHearts();
+      stopPhotos();
+      stopShootingStars();
+    }
   }
 
   // 第1页：yes 乱跑
@@ -108,6 +141,32 @@
         if(p<1) requestAnimationFrame(tick); else { numEl.textContent=String(target); resolve(); } }
       requestAnimationFrame(tick);
     });
+  }
+
+  async function smoothToPage4(options = {}) {
+    const {
+      explodeTotal = 1600,  // 爆炸总时长 = 你的 BLAST_DUR + DRIFT_DUR
+      prewarmLead = 200,    // 卡片比爆炸提前多少毫秒弹入
+      fadeOutP3  = 280      // 第3页淡出时长，和 CSS 的 .28s 对齐
+    } = options;
+
+    const love = document.getElementById('loveScreen');
+    const card = document.querySelector('#page4 .goodnight-card');
+
+    // 1) 立刻切到第4页（预热到场，但卡片还未弹入）
+    showPage(4);
+
+    // 2) 第3页开始淡出（和爆炸尾声重叠）
+    love.classList.add('fade-out');
+
+    // 4) 等爆炸真正结束 + 淡出收尾，再彻底隐藏第3页
+    await new Promise(r => setTimeout(r, Math.max(explodeTotal, prewarmLead) + fadeOutP3));
+    love.style.display = 'none';
+    love.setAttribute('aria-hidden', 'true');
+
+    // 清理第3页心雨
+    const floaters = document.getElementById('floaters');
+    if (floaters) floaters.innerHTML = '';
   }
 
   function explodeHeartThenGo() {
@@ -208,20 +267,21 @@
       });
     }
 
-    // 4) 稍晚切第4页（让爆炸更完整）
-    setTimeout(() => {
-      loveScreen.style.display = 'none';
-      loveScreen.setAttribute('aria-hidden','true');
-      floaters.innerHTML = '';
-      showPage(4);
+    // 4) 爆炸与第4页重叠过渡（更自然）
+    (async () => {
+      // 让第4页卡片与爆炸尾声重叠：爆炸总时长 = BLAST_DUR + DRIFT_DUR
+      const EXPLODE_TOTAL = BLAST_DUR + DRIFT_DUR; // 900 + 700 = 1600（按你上面的参数）
 
-      // 承接烟花（保留你现有的 explode(x,y)）
+      // 先并行触发第4页预热过渡
+      smoothToPage4({ explodeTotal: EXPLODE_TOTAL, prewarmLead: 200, fadeOutP3: 280 });
+
+      // 同时在第4页放烟花（承接你的视觉动势）
       const x = innerWidth * 0.5 + (Math.random()*120-60);
       const y = innerHeight * 0.38 + (Math.random()*80-40);
       explode(x, y);
       setTimeout(()=> explode(x + (Math.random()*160-80), y + (Math.random()*80-40)), 160);
       setTimeout(()=> explode(x + (Math.random()*200-100), y + (Math.random()*100-50)), 360);
-    }, PAGE_SWITCH_DELAY);
+    })();
   }
 
   loveScreen.addEventListener('click', async (e)=>{

@@ -1,128 +1,176 @@
 :root{
-  --pink1:#ffe3ee; --pink2:#ffd1e8; --pink3:#ffc2dd; --white:#ffffff;
-  --card:#fff9fbf2; --text:#3a3a3a; --sub:#6b6b6b; --love:#ef3b5d; --ring:#ff8ab3;
+  --pink1:#ffe3ee;
+  --pink2:#ffd1e8;
+  --pink3:#ffc2dd;
+  --white:#ffffff;
+  --card:#fff9fbf2;
+  --text:#3a3a3a;
+  --sub:#6b6b6b;
+  --love:#ef3b5d;
+  --ring:#ff8ab3;
 }
+
 *{ box-sizing:border-box }
 html,body{ height:100% }
-body{
-  margin:0;
-  font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,Roboto,Helvetica,Arial;
-  height:100%; display:grid; place-items:center; overflow:hidden;
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, Roboto, Helvetica, Arial;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
   background:
     radial-gradient(1000px 800px at 50% -20%, rgba(255, 192, 203, 0.35), transparent 50%),
     linear-gradient(120deg, #ffe3ee, #ffffff, #f3d1f4, #ffffff, #ffd1e8);
-  background-size:200% 200%,200% 200%;
-  animation:softFlow 15s ease-in-out infinite;
+  background-size: 200% 200%, 200% 200%;
+  animation: softFlow 15s ease-in-out infinite;
 }
-@keyframes softFlow{
-  0%{ background-position:50% 0%, 0% 50% }
-  50%{ background-position:50% 100%, 100% 50% }
-  100%{ background-position:50% 0%, 0% 50% }
+@keyframes softFlow {
+  0%   { background-position: 50% 0%, 0% 50%; }
+  50%  { background-position: 50% 100%, 100% 50%; }
+  100% { background-position: 50% 0%, 0% 50%; }
 }
 
 /* 卡片页（第1/2/4页容器样式） */
 section{
-  display:none; background:var(--card); border:1px solid #ffd1e8; border-radius:20px;
-  box-shadow:0 10px 28px rgba(0,0,0,.12); padding:28px 24px; text-align:center; width:min(92vw,560px); z-index:10;
+  display:none;
+  background:var(--card);
+  border:1px solid #ffd1e8;
+  border-radius:20px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.12);
+  padding:28px 24px;
+  text-align:center;
+  width:min(92vw, 560px);
+  z-index:10;
 }
 section.active{ display:grid }
 
-h1{ font-size:clamp(20px,3.4vw,28px); font-weight:800; letter-spacing:.2px; margin:0 }
+h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; margin:0 }
 .hint{ margin-top:14px; text-align:center; color:#8b8b8b; font-size:12px }
 
 .btns{ margin-top:22px; display:flex; gap:14px; align-items:center; justify-content:center; position:relative; min-height:56px }
 .btn{
-  min-width:120px; text-align:center; appearance:none; border:1px solid #ffd6ea; color:var(--text); background:#fff;
-  padding:12px 20px; border-radius:12px; cursor:pointer; font-weight:700; font-size:16px;
+  min-width:120px; text-align:center;
+  appearance:none; border:1px solid #ffd6ea; color:var(--text);
+  background:#fff; padding:12px 20px; border-radius:12px; cursor:pointer; font-weight:700; font-size:16px;
   transition: transform .18s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
-  box-shadow:0 4px 12px rgba(255,105,135,.15);
+  box-shadow: 0 4px 12px rgba(255,105,135,.15);
 }
 .btn:hover{ transform: translateY(-1px); border-color:#ff9cc2 }
 .btn:active{ transform: translateY(0) }
-.btn:focus-visible{ outline:none; box-shadow:0 0 0 3px #ffb3cf7a }
+.btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px #ffb3cf7a }
 
-#loveBtn:hover{ background:linear-gradient(180deg,#ff7d9f,var(--love)); border-color:#ff9ab6; color:white }
-#loveBtn:active{ background:var(--love); border-color:#e03a58; color:white }
-#yes1:hover,#no1:hover{ background:linear-gradient(180deg,#ff7d9f,var(--love)); border-color:#ff9ab6; color:white }
-#yes1:active,#no1:active{ background:var(--love); border-color:#e03a58; color:white }
+/* 第二页“爱 ❤️”按钮 */
+#loveBtn:hover{ 
+  background: linear-gradient(180deg, #ff7d9f, var(--love)); 
+  border-color:#ff9ab6; 
+  color:white;
+}
+#loveBtn:active{
+  background: var(--love);
+  border-color: #e03a58;
+  color:white;
+}
+
+/* 第1页按钮：统一红色激活效果 */
+#yes1:hover,
+#no1:hover {
+  background: linear-gradient(180deg, #ff7d9f, var(--love));
+  border-color: #ff9ab6;
+  color: white;
+}
+#yes1:active,
+#no1:active {
+  background: var(--love);
+  border-color: #e03a58;
+  color: white;
+}
 
 /* —— 第3页：爱心屏（全屏覆盖） —— */
 .love-screen{
-  position:fixed; inset:0; width:100%; height:100%; display:none; place-items:center;
-  border:0; box-shadow:none; background:transparent; z-index:100; color:#b91c1c;
+  position:fixed; inset:0; width:100%; height:100%;
+  display:none; place-items:center;
+  border:0; box-shadow:none; background:transparent;
   background:
     radial-gradient(1200px 800px at 50% -20%, rgba(255,182,193,.35), transparent 60%),
     linear-gradient(120deg, var(--pink1), var(--white), var(--pink2), var(--white), var(--pink3));
-  background-size:200% 200%, 200% 200%;
-  animation:bgShift 14s ease-in-out infinite;
+  background-size: 200% 200%, 200% 200%;
+  animation: bgShift 14s ease-in-out infinite;
+  z-index:100; color:#b91c1c;
 }
-@keyframes bgShift{
-  0%{ background-position:50% 0%, 0% 50% }
-  50%{ background-position:50% 100%, 100% 50% }
-  100%{ background-position:50% 0%, 0% 50% }
+@keyframes bgShift {
+  0% { background-position: 50% 0%, 0% 50% }
+  50%{ background-position: 50% 100%, 100% 50% }
+  100%{ background-position: 50% 0%, 0% 50% }
 }
 .love-wrap{ display:grid; place-items:center; text-align:center }
 
-/* 单颗心（果冻感 + 轻柔阴影） */
+/* 初始爱心（果冻小高光 + 轻投影） */
 .heart-svg{
-  width:200px; height:180px;
-  transform-origin:50% 60%;
-  transform:scale(1);
-  animation:pop .8s cubic-bezier(.2,.8,.2,1) both;
-  filter: drop-shadow(0 14px 22px rgba(239,59,93,.25));
+  width: 200px; height: 180px;
+  transform-origin: 50% 60%;
+  transform: scale(1);
+  filter: drop-shadow(0 10px 14px rgba(239,59,93,.25));
+  animation: pop .8s cubic-bezier(.2,.8,.2,1) both;
 }
 @keyframes pop{ 0%{ transform: scale(.6);} 100%{ transform: scale(1);} }
 
-/* shine 轻微漂浮（静态场景也显得有生命力） */
-.heart-shine{ transform-origin:50% 50%; animation: shineFloat 3.6s ease-in-out infinite }
-@keyframes shineFloat{
-  0%{ transform: translate(0,0) scale(1) rotate(0deg); opacity:.95 }
-  50%{ transform: translate(1px,-1px) scale(1.04) rotate(-3deg); opacity:.85 }
-  100%{ transform: translate(0,0) scale(1) rotate(0deg); opacity:.95 }
-}
-
-/* 点击时的果冻弹跳 */
-@keyframes jellyPop {
-  0%   { transform: scale(1) }
-  18%  { transform: scale(0.96, 0.90) }  /* squash */
-  42%  { transform: scale(1.18, 1.06) }  /* stretch */
-  70%  { transform: scale(1.04, 0.99) }
+/* 软弹关键帧（JS触发时用） */
+@keyframes heartPopSoft {
+  0%   { transform: scale(0.94) }
+  18%  { transform: scale(0.98, 0.92) }
+  44%  { transform: scale(1.16, 1.06) }
+  70%  { transform: scale(1.03, 0.99) }
   100% { transform: scale(1.08) }
 }
 
-/* 文案与倒计时行 */
-.love-text{ margin-top:22px; font-size:clamp(18px,2.8vw,26px); font-weight:800; letter-spacing:.5px; color:#b91c1c }
+.love-text{ margin-top:22px; font-size: clamp(18px, 2.8vw, 26px); text-align:center; font-weight:800; letter-spacing:.5px; color:#b91c1c }
 .love-sub{ font-size:12px; color:#a1a1a1; margin-top:6px }
 
-.together-line{
-  margin-top:22px;
-  font-size: clamp(22px, 3.6vw, 34px);
-  font-weight: 800; letter-spacing:.5px; color:#b91c1c;
-  opacity:0; transform: translateY(8px) scale(.98);
-  transition: opacity .6s ease, transform .6s ease;
+/* 第3页：心心雨容器 */
+.floaters{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:120 }
+.floater{ position:absolute; font-size: 14px; opacity:.9; animation: rise 6s linear infinite }
+@keyframes rise{
+  from{ transform: translateY(20vh) translateX(0) scale(.9); opacity:0 }
+  10%{ opacity:.9 }
+  to{ transform: translateY(-110vh) translateX(20px) scale(1.15); opacity:0 }
 }
-.together-line.show{ opacity:1; transform: translateY(0) scale(1) }
+
+/* —— 倒计时行 —— */
+.together-line{
+  margin-top: 18px;
+  font-size: clamp(22px, 3.6vw, 34px);
+  font-weight: 800;
+  letter-spacing: .5px;
+  color: #b91c1c;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px) scale(.98);
+  transition: opacity .6s ease, transform .6s ease;
+  animation: fadeInUp .48s cubic-bezier(.22,1,.36,1) both;
+}
+.together-line.show{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 倒计时数字：果冻质感（与桃心同系） */
 #daysNum {
-  font-size: 2em;                   /* 保持放大 */
+  font-size: 2em;
   font-weight: 900;
-  color: #ff5b7c;                   /* 桃心主色（可调 #ef3b5d / #ff7da3） */
+  color: #ff5b7c;
   background: linear-gradient(145deg, #ff8fa3, #ff5b7c, #e7385d);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  /* 果冻质感：内阴影+发光 */
   text-shadow:
-    0 2px 6px rgba(255, 92, 120, 0.5),   /* 外部柔光 */
-    0 -1px 2px rgba(255, 255, 255, 0.6), /* 顶部高光 */
-    0 3px 3px rgba(0, 0, 0, 0.25);       /* 底部立体阴影 */
-
-  /* 轻微果冻弹性动画（数字变化时更Q弹） */
+    0 2px 6px rgba(255, 92, 120, 0.5),
+    0 -1px 2px rgba(255, 255, 255, 0.6),
+    0 3px 3px rgba(0, 0, 0, 0.25);
   display: inline-block;
   transition: transform 0.3s ease;
 }
-#daysNum.jelly {
-  animation: jellyPulse 0.6s ease;
-}
+#daysNum.jelly { animation: jellyPulse 0.6s ease; }
 
 @keyframes jellyPulse {
   0%   { transform: scale(1); }
@@ -132,95 +180,281 @@ h1{ font-size:clamp(20px,3.4vw,28px); font-weight:800; letter-spacing:.2px; marg
   100% { transform: scale(1); }
 }
 
-/* 第3页：心心雨 */
-.floaters{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:120 }
-.floater{ position:absolute; font-size:14px; opacity:.9; animation: rise 6s linear infinite }
-@keyframes rise{
-  from{ transform: translateY(20vh) translateX(0) scale(.9); opacity:0 }
-  10%{ opacity:.9 }
-  to{ transform: translateY(-110vh) translateX(20px) scale(1.15); opacity:0 }
+/* 文本淡出 + 上浮 */
+@keyframes fadeOutUp {
+  0%   { opacity: 1; transform: translateY(0) }
+  100% { opacity: 0; transform: translateY(-6px) }
+}
+/* 句子淡入 + 上浮 */
+@keyframes fadeInUp {
+  0%   { opacity: 0; transform: translateY(6px) scale(.98) }
+  100% { opacity: 1; transform: translateY(0) scale(1) }
 }
 
-/* 第4页、玻璃卡片、流星、其余：保持你原有样式（未改动） */
-#fireworks, #floatHearts, #photos{ position:fixed; inset:0; pointer-events:none; z-index:80 }
-#floatHearts{ z-index:82 } #photos{ z-index:84 }
+/* —— 第4页：烟花 + 背景漂浮心 + 照片 —— */
+#fireworks, #floatHearts, #photos{
+  position: fixed; inset: 0; pointer-events: none; z-index: 80;
+}
+#floatHearts{ z-index:82 }
+#photos{ z-index:84 }
 .particle{ position:absolute; width:8px; height:8px; border-radius:50%; pointer-events:none }
+
 #photos img{
   position:absolute; opacity:0; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.35);
-  animation: floatPhoto 9s linear forwards; object-fit:cover;
-  -webkit-mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,.95), rgba(0,0,0,0) 100%);
-          mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,.95), rgba(0,0,0,0) 100%);
+  animation: floatPhoto 9s linear forwards;
+  object-fit: cover;
+  -webkit-mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,0.95), rgba(0,0,0,0.0) 100%);
+          mask-image: radial-gradient(80% 80% at 50% 50%, rgba(0,0,0,0.95), rgba(0,0,0,0.0) 100%);
 }
 @keyframes floatPhoto{
-  0%{ transform: translate(0,0) scale(.9) rotate(0deg); opacity:0 }
-  15%{ opacity:1 }
-  85%{ opacity:1 }
-  100%{ transform: translate(var(--dx), var(--dy)) scale(1.05) rotate(var(--rot)); opacity:0 }
+  0%   { transform: translate(0, 0) scale(.9) rotate(0deg); opacity:0 }
+  15%  { opacity:1 }
+  85%  { opacity:1 }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.05) rotate(var(--rot)); opacity:0 }
 }
-#yes1, #noBtn{ touch-action:none }
-@media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important } }
+
+/* 触控优化 */
+#yes1, #noBtn{ touch-action: none }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important }
+}
 @media (max-width: 480px){ .btn{ min-width:100px; padding:14px 22px; font-size:17px } }
 
-.rainbow-text{
+/* 彩色动态文字效果（粉紫渐变 + 大字号） */
+.rainbow-text {
   font-size: clamp(22px, 7vw, 46px);
-  font-weight:900; text-align:center;
-  background:linear-gradient(270deg,#ffb6c1,#ff69b4,#ff8fd1,#d98bff,#b565f2);
-  background-size:600% 600%;
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(270deg, #ffb6c1, #ff69b4, #ff8fd1, #d98bff, #b565f2);
+  background-size: 600% 600%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   animation: rainbowFlow 12s ease infinite, glowPulse 6s ease-in-out infinite;
-  text-shadow:0 0 8px rgba(255,182,193,.7),0 0 14px rgba(255,105,180,.6),0 0 24px rgba(221,160,221,.5);
+  text-shadow:
+    0 0 8px rgba(255, 182, 193, 0.7),
+    0 0 14px rgba(255, 105, 180, 0.6),
+    0 0 24px rgba(221, 160, 221, 0.5);
 }
-@keyframes rainbowFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@keyframes glowPulse{0%,100%{text-shadow:0 0 6px rgba(255,182,193,.6),0 0 12px rgba(255,105,180,.5),0 0 20px rgba(221,160,221,.4)}50%{text-shadow:0 0 14px rgba(255,182,193,.9),0 0 24px rgba(255,105,180,.8),0 0 36px rgba(221,160,221,.7)}}
+@keyframes rainbowFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 6px rgba(255, 182, 193, 0.6),
+      0 0 12px rgba(255, 105, 180, 0.5),
+      0 0 20px rgba(221, 160, 221, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 14px rgba(255, 182, 193, 0.9),
+      0 0 24px rgba(255, 105, 180, 0.8),
+      0 0 36px rgba(221, 160, 221, 0.7);
+  }
+}
 
-#page4{ position:relative; z-index:300; background:none !important; border:none !important; box-shadow:none !important; place-items:center }
-#page4 .goodnight-card{ position:relative; z-index:310; padding:22px 40px; border-radius:24px; background:transparent }
-#page4 .goodnight-card::before{
-  content:""; position:absolute; inset:0; border-radius:inherit; z-index:0;
-  background: rgba(255,255,255,0.16); backdrop-filter: blur(14px) saturate(160%) contrast(110%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%) contrast(110%); box-shadow:0 18px 40px rgba(0,0,0,0.22);
+/* 第4页容器在所有特效上面 */
+#page4{
+  position: relative;
+  z-index: 300;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  place-items: center;
 }
-#page4 .goodnight-card::after{
-  content:""; position:absolute; inset:-1px; border-radius:inherit; z-index:0;
-  background: linear-gradient(135deg,#ff7db1,#ff8bd5,#d899ff,#b380ff);
+
+/* —— 第4页卡片（厚重玻璃 + 强磨砂） —— */
+#page4 .goodnight-card {
+  position: relative;
+  z-index: 310;
+  padding: 24px 42px;
+  border-radius: 28px;
+  background: transparent;
+  transform: scale(0.94) translateY(4px);
+  opacity: 0;
+  will-change: transform, opacity;
+  isolation: isolate;
+}
+
+/* 背景玻璃层 */
+#page4 .goodnight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+
+  /* 更厚的半透明底色 (0.28 → 0.38) */
+  background:
+    radial-gradient(140px 140px at 25% 20%, rgba(255,255,255,0.14), rgba(255,255,255,0) 70%),
+    radial-gradient(200px 200px at 70% 75%, rgba(255,255,255,0.12), rgba(255,255,255,0) 80%),
+    rgba(255,255,255,0.38);
+
+  /* 更强磨砂 (blur 20px → 28px)，饱和/对比也更强 */
+  backdrop-filter: blur(28px) saturate(190%) contrast(125%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(125%);
+
+  /* 内外阴影 → 厚度更强 */
+  box-shadow:
+    inset 0 1px 3px rgba(255,255,255,0.4),  /* 内高光 */
+    inset 0 -2px 6px rgba(0,0,0,0.25),      /* 内暗角 */
+    0 25px 55px rgba(0,0,0,0.32);           /* 外阴影更深 */
+}
+
+/* 边缘渐变描边 + 发光 */
+#page4 .goodnight-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  z-index: 0;
+  background: linear-gradient(135deg, #ff7db1, #ff8bd5, #d899ff, #b380ff);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude; padding:1px; opacity:.85;
-}
-#page4 .goodnight-card .rainbow-text{ position:relative; z-index:1; font-size:clamp(24px,7vw,48px); font-weight:900 }
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  opacity: 1;
 
-#page1,#page2{ position:relative; background:transparent !important; border:none !important; box-shadow:none !important; overflow:visible }
-#page1::before,#page2::before{
-  content:""; position:absolute; inset:0; border-radius:20px; pointer-events:none;
-  background:rgba(255,255,255,0.16); backdrop-filter:blur(14px) saturate(160%) contrast(110%); -webkit-backdrop-filter:blur(14px) saturate(160%) contrast(110%);
-  box-shadow:0 18px 40px rgba(0,0,0,0.22); z-index:0;
+  /* 微光效果 */
+  box-shadow: 0 0 10px rgba(255,150,200,0.6),
+              0 0 20px rgba(200,150,255,0.4);
 }
-#page1::after,#page2::after{
-  content:""; position:absolute; inset:-1px; border-radius:20px; pointer-events:none; z-index:0;
-  background:linear-gradient(135deg,#ff7db1,#ff8bd5,#d899ff,#b380ff);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude; padding:1px; opacity:.9;
-}
-#page1 > *,#page2 > *{ position:relative; z-index:1 }
-#page1 .btn,#page2 .btn{ background:rgba(255,255,255,.75); border-color:rgba(255,255,255,.6); box-shadow:0 6px 16px rgba(0,0,0,.15); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px) }
-#page1 .btn:hover,#page2 .btn:hover{ background:linear-gradient(180deg,#ff8fb8,var(--love)); color:#fff; border-color:#ff9ab6 }
-#page1 .btn:active,#page2 .btn:active{ background:var(--love); color:#fff; border-color:#e03a58 }
 
-/* 流星 */
-#shootingStars{ position:fixed; inset:0; pointer-events:none; z-index:85 }
-.shooting-star{
-  position:absolute; width:120px; height:4px;
-  background:linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(200,220,255,0.9) 40%, rgba(180,160,255,0.7) 70%, rgba(255,255,255,0) 100%);
-  opacity:.9; border-radius:50%; transform:rotate(-45deg); animation:shoot 1.5s linear forwards; filter:drop-shadow(0 0 6px white);
+#page4 .goodnight-card.enter {
+  animation: cardPopIn .20s cubic-bezier(.22,1,.36,1) both;
 }
-@keyframes shoot{ from{ transform:translate(0,0) rotate(-45deg); opacity:1 } to{ transform:translate(-70vw,70vh) rotate(-45deg); opacity:0 } }
+@keyframes cardPopIn {
+  0%   { transform: scale(0.86) translateY(10px); opacity: 0; }
+  40%  { transform: scale(1.06) translateY(0px);  opacity: 1; }
+  70%  { transform: scale(0.98) translateY(0px);  opacity: 1; }
+  100% { transform: scale(1)    translateY(0px);  opacity: 1; }
+}
 
-.puff-heart {
-  position: fixed; left: 0; top: 0; width: 200px; height: 180px; z-index: 240; pointer-events:none;
-  filter: drop-shadow(0 10px 12px rgba(239,59,93,.28));
+/* —— 第4页文字：果冻质感 + Q弹循环 —— */
+#page4 .rainbow-text.gel {
+  text-shadow:
+    0 2px 6px rgba(255, 120, 150, 0.35),
+    0 -1px 2px rgba(255, 255, 255, 0.55),
+    0 3px 3px rgba(0, 0, 0, 0.20);
+  -webkit-text-stroke: 0.6px rgba(255, 255, 255, 0.25);
 }
-.micro-heart {
-  position: fixed; font-size: 12px; z-index: 245; pointer-events: none; will-change: transform, opacity;
+
+/* 入场：一次性的果冻弹 */
+#page4 .rainbow-text.jelly-in {
+  animation: jellyIn 0.8s cubic-bezier(.22,1.4,.36,1) both;
 }
-.fade-veil {
-  position: fixed; inset:0; background:#fff; opacity:0; z-index: 230; pointer-events:none;
+@keyframes jellyIn {
+  0%   { transform: scale(0.85); }
+  40%  { transform: scale(1.15, 0.90); }
+  70%  { transform: scale(0.95, 1.05); }
+  100% { transform: scale(1); }
+}
+
+/* 循环：Q弹的持续果冻律动 */
+#page4 .rainbow-text.jelly-soft {
+  animation: jellyLoop 1.8s cubic-bezier(.36,0,.66,1) infinite;
+}
+
+@keyframes jellyLoop {
+  0%   { transform: scale(1); }
+  15%  { transform: scale(1.18, 0.82); }
+  35%  { transform: scale(0.92, 1.08); }
+  55%  { transform: scale(1.08, 0.95); }
+  75%  { transform: scale(0.97, 1.04); }
+  100% { transform: scale(1); }
+}
+
+/* ========== 第1页 & 第2页：玻璃拟态卡片 ========== */
+#page1, #page2 {
+  position: relative; background: transparent !important; border: none !important; box-shadow: none !important; overflow: visible;
+}
+#page1::before, #page2::before {
+  content: ""; position: absolute; inset: 0; border-radius: 20px; pointer-events: none;
+  background: rgba(255,255,255,0.16);
+  backdrop-filter: blur(14px) saturate(160%) contrast(110%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%) contrast(110%);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.22); z-index: 0;
+}
+#page1::after, #page2::after {
+  content: ""; position: absolute; inset: -1px; border-radius: 20px; pointer-events: none; z-index: 0;
+  background: linear-gradient(135deg, #ff7db1, #ff8bd5, #d899ff, #b380ff);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  padding: 1px; opacity: .9;
+}
+#page1 > *, #page2 > * { position: relative; z-index: 1; }
+#page1 .btn, #page2 .btn {
+  background: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#page1 .btn:hover, #page2 .btn:hover { background: linear-gradient(180deg, #ff8fb8, var(--love)); color: #fff; border-color: #ff9ab6; }
+#page1 .btn:active, #page2 .btn:active { background: var(--love); color: #fff; border-color: #e03a58; }
+
+/* 流星容器 */
+#shootingStars { position: fixed; inset: 0; pointer-events: none; z-index: 85; }
+.shooting-star {
+  position: absolute; width: 120px; height: 4px;
+  background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(200,220,255,0.9) 40%, rgba(180,160,255,0.7) 70%, rgba(255,255,255,0) 100%);
+  opacity: 0.9; border-radius: 50%; transform: rotate(-45deg); animation: shoot 1.5s linear forwards;
+  filter: drop-shadow(0 0 6px white);
+}
+@keyframes shoot {
+  from { transform: translate(0, 0) rotate(-45deg); opacity: 1; }
+  to   { transform: translate(-70vw, 70vh) rotate(-45deg); opacity: 0; }
+}
+
+/* —— 爆炸过渡：幽灵心/白纱幕/微粒 —— */
+.puff-heart{
+  position: fixed;
+  width: 200px; height: 180px;
+  pointer-events: none;
+  z-index: 999;
+  filter: drop-shadow(0 10px 10px rgba(239,59,93,.35));
+  left: 0; top: 0;
+}
+.fade-veil{
+  position: fixed; inset: 0;
+  background: radial-gradient(60% 60% at 50% 40%, rgba(255,255,255,.28), rgba(255,255,255,0));
+  pointer-events: none; z-index: 98; opacity: 0;
+}
+.micro-heart{
+  position: fixed;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity, filter;
+  z-index: 999;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 末尾：避免重复定义 */
+
+
+
+
+
+/* 第3页淡出，用于和第4页卡片重叠交接 */
+.love-screen.fade-out {
+  opacity: 0;
+  transition: opacity .28s ease;
+  pointer-events: none;
+}
+
+/* 第4页卡片的入场动画（你已有 enter 动画就用已有的类名） */
+#page4 .goodnight-card {
+  transform: scale(0.94) translateY(4px);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+#page4 .goodnight-card.enter {
+  animation: cardPopIn .40s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes cardPopIn {
+  0%   { transform: scale(0.90) translateY(10px); opacity: 0; }
+  38%  { transform: scale(1.08) translateY(0px);  opacity: 1; }
+  72%  { transform: scale(0.985) translateY(0px); opacity: 1; }
+  100% { transform: scale(1)     translateY(0px);  opacity: 1; }
 }
