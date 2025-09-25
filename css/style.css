@@ -458,3 +458,12 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   72%  { transform: scale(0.985) translateY(0px); opacity: 1; }
   100% { transform: scale(1)     translateY(0px);  opacity: 1; }
 }
+
+
+/* 进入首帧用“轻玻璃”，减轻手机首帧负载；0.48s 后自动去掉该类 */
+@media (max-width: 820px){
+  #page4 .goodnight-card.glass-lite::before{
+    backdrop-filter: blur(6px) saturate(120%) contrast(105%);
+    -webkit-backdrop-filter: blur(6px) saturate(120%) contrast(105%);
+  }
+}

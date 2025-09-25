@@ -17,6 +17,7 @@
   let yes1Scale = 1, noBtnScale = 1;
   let fwTimer=null, floatHeartTimer=null, photoTimer=null;
   let loveStage = 0; // 0：首击播放心弹+显示天数；1：二击跳到第4页
+  let p4EnterPlanned = false; // 由 smoothToPage4 负责触发第4页卡片入场时置为 true
 
   // —— 布局控制（照片防重叠） —— //
   const SAFE_MARGIN_VW = 3, GRID_COLS = 6, GRID_ROWS = 3, GRID_TOP_VH = 52, GRID_BOTTOM_VH = 92;
@@ -56,26 +57,23 @@
       startShootingStars();
 
       requestAnimationFrame(() => {
-        const card = document.querySelector('#page4 .goodnight-card');
-        const txt  = document.querySelector('#page4 .rainbow-text');
-        if (card) card.classList.add('enter');
+        // 只有在“不是由 smoothToPage4 接管”的情况下，才在这里自动触发 enter
+        if (!p4EnterPlanned) {
+          const card = document.querySelector('#page4 .goodnight-card');
+          const txt  = document.querySelector('#page4 .rainbow-text');
+          if (card) card.classList.add('enter');
 
-        if (txt) {
-          // 永久果冻质感
-          txt.classList.add('gel');
-
-          // 一次性的“慢慢弹入”
-          txt.classList.remove('jelly-in'); // 重置
-          void txt.offsetWidth;
-          txt.classList.add('jelly-in');
-
-          // 持续的轻柔律动（等入场结束后再开始更自然）
-          setTimeout(() => {
-            txt.classList.add('jelly-soft');
-          }, 800);
+          if (txt) {
+            txt.classList.add('gel');
+            txt.classList.remove('jelly-in');
+            void txt.offsetWidth;
+            txt.classList.add('jelly-in');
+            setTimeout(() => { txt.classList.add('jelly-soft'); }, 800);
+          }
         }
+        // 无论如何都把标记复位，防止后续受影响
+        p4EnterPlanned = false;
       });
-
     } else {
       stopFireworks();
       stopFloatHearts();
@@ -144,7 +142,11 @@
   }
 
   // —— 手机端预热第4页，降低切换卡顿（最小改动版）——
+  // —— 手机端预热第4页（最小改动 & 更稳）——
+  let p4Primed = false;
   function prewarmPage4(){
+    if (p4Primed) return;
+
     const p4   = document.getElementById('page4');
     const card = document.querySelector('#page4 .goodnight-card');
     const txt  = document.querySelector('#page4 .rainbow-text');
@@ -152,25 +154,35 @@
 
     // 记录原状态
     const prevDisplay = p4.style.display;
-    const prevVis     = p4.style.visibility;
+    const prevOpacity = p4.style.opacity;
+    const prevPE      = p4.style.pointerEvents;
 
-    // 短暂显示但不可见，让浏览器提前完成布局/栅格化
-    p4.style.display = 'grid';
-    p4.style.visibility = 'hidden';
+    // 隐形渲染：让浏览器真正做一遍布局+栅格化，但对用户不可见
+    p4.style.display      = 'grid';
+    p4.style.opacity      = '0';
+    p4.style.pointerEvents= 'none';
 
-    // 让 GPU 先分配合成层
+    // 提前创建合成层，避免首帧卡顿
     card.style.willChange = 'transform, opacity, filter';
     txt.style.willChange  = 'transform, opacity, filter';
-    card.style.transform  = 'translateZ(0) scale(1)';
+    card.style.transform  = 'translateZ(0)';   // GPU 合成层
     txt.style.transform   = 'translateZ(0)';
 
-    // 强制一次布局+绘制
-    p4.getBoundingClientRect();
-    card.offsetWidth;
+    // 双 rAF：确保经历样式 -> 布局 -> 绘制 -> 合成的完整帧
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // 强制计算/绘制
+        p4.getBoundingClientRect();
+        card.offsetWidth;
 
-    // 还原
-    p4.style.display   = prevDisplay || '';
-    p4.style.visibility= prevVis || '';
+        // 还原
+        p4.style.display       = prevDisplay || '';
+        p4.style.opacity       = prevOpacity || '';
+        p4.style.pointerEvents = prevPE || '';
+
+        p4Primed = true;
+      });
+    });
   }
 
   async function smoothToPage4(options = {}) {
@@ -183,11 +195,38 @@
     const love = document.getElementById('loveScreen');
     const card = document.querySelector('#page4 .goodnight-card');
 
+    // 交给 smoothToPage4 来触发入场，避免 showPage(4) 再触发一次
+    p4EnterPlanned = true;
+
+    // 安排卡片的入场（带‘轻玻璃’+双 rAF，手机更稳）
+    const scheduleEnter = () => {
+      if (!card) return;
+
+      // 手机端：先上轻玻璃，减负载（需要配合下面的可选 CSS）
+      card.classList.add('glass-lite');
+
+      // 双 rAF 触发 enter，避开主线程拥挤
+      card.classList.remove('enter');  // 重置
+      void card.offsetWidth;           // 强制回流
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          card.classList.add('enter');   // 触发弹入
+          setTimeout(() => {             // 0.48s 后恢复厚玻璃
+            card.classList.remove('glass-lite');
+          }, 480);
+        });
+      });
+    };
+
     // 1) 立刻切到第4页（预热到场，但卡片还未弹入）
     showPage(4);
 
     // 2) 第3页开始淡出（和爆炸尾声重叠）
     love.classList.add('fade-out');
+    // 在爆炸结束前 prewarmLead 毫秒，让卡片开始弹入（与尾声重叠更自然）
+    const enterDelay = Math.max(0, explodeTotal - prewarmLead);
+    if (enterDelay === 0) scheduleEnter();
+    else setTimeout(scheduleEnter, enterDelay);
 
     // 4) 等爆炸真正结束 + 淡出收尾，再彻底隐藏第3页
     await new Promise(r => setTimeout(r, Math.max(explodeTotal, prewarmLead) + fadeOutP3));
@@ -335,8 +374,7 @@
     // 隐藏“我也爱你！宝宝”，显示天数（占据同样位置）
     const loveLine = $('loveLine');
     const line = $('togetherLine');
-    // 👉 在这里偷偷预热第4页卡片
-    prewarmPage4();
+    
     if (loveLine) loveLine.style.display='none';
     if (line){
       line.hidden=false;
@@ -345,7 +383,8 @@
       // 计天（从 2025/05/20）
       const days = daysSince(2025,5,20);
       await countUpTo(days);
-
+      // 👉 在这里偷偷预热第4页卡片
+      prewarmPage4();
       
     }
 
