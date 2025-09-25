@@ -11,7 +11,7 @@
   const fireworks = $('fireworks'), floatHearts = $('floatHearts'), photos = $('photos');
 
   // ===== 音乐 =====
-  const bgm = new Audio('./music.m4a'); bgm.preload='auto'; bgm.loop=true; bgm.volume=0.4;
+  const bgm = new Audio('./music.m4a'); bgm.preload='auto'; bgm.loop=true; bgm.volume=0.3;
 
   // ===== 状态 =====
   let yes1Scale = 1, noBtnScale = 1;
@@ -110,7 +110,7 @@
     if(Date.now()<suppressNavUntil){ e.preventDefault(); e.stopImmediatePropagation(); return; }
     try{
       bgm.currentTime=0; bgm.volume=0; bgm.play();
-      const target=0.4, step=0.005; const t=setInterval(()=>{ if(bgm.volume<target) bgm.volume=Math.min(bgm.volume+step,target); else clearInterval(t) },100);
+      const target=0.3, step=0.005; const t=setInterval(()=>{ if(bgm.volume<target) bgm.volume=Math.min(bgm.volume+step,target); else clearInterval(t) },100);
     }catch{}
     loveScreen.style.display='grid'; loveScreen.setAttribute('aria-hidden','false'); sprayHearts();
   });
