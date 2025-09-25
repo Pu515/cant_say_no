@@ -9,7 +9,6 @@
   --love:#ef3b5d;
   --ring:#ff8ab3;
 }
-
 *{ box-sizing:border-box }
 html,body{ height:100% }
 
@@ -61,7 +60,6 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 .btn:active{ transform: translateY(0) }
 .btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px #ffb3cf7a }
 
-/* 第二页“爱 ❤️”按钮 */
 #loveBtn:hover{ 
   background: linear-gradient(180deg, #ff7d9f, var(--love)); 
   border-color:#ff9ab6; 
@@ -72,16 +70,12 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   border-color: #e03a58;
   color:white;
 }
-
-/* 第1页按钮：统一红色激活效果 */
-#yes1:hover,
-#no1:hover {
+#yes1:hover, #no1:hover {
   background: linear-gradient(180deg, #ff7d9f, var(--love));
   border-color: #ff9ab6;
   color: white;
 }
-#yes1:active,
-#no1:active {
+#yes1:active, #no1:active {
   background: var(--love);
   border-color: #e03a58;
   color: white;
@@ -106,7 +100,6 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
 }
 .love-wrap{ display:grid; place-items:center; text-align:center }
 
-/* 初始爱心（果冻小高光 + 轻投影） */
 .heart-svg{
   width: 200px; height: 180px;
   transform-origin: 50% 60%;
@@ -155,7 +148,7 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   transform: translateY(0) scale(1);
 }
 
-/* 倒计时数字：果冻质感（与桃心同系） */
+/* 倒计时数字：果冻质感 */
 #daysNum {
   font-size: 2em;
   font-weight: 900;
@@ -171,7 +164,6 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   transition: transform 0.3s ease;
 }
 #daysNum.jelly { animation: jellyPulse 0.6s ease; }
-
 @keyframes jellyPulse {
   0%   { transform: scale(1); }
   25%  { transform: scale(1.2, 0.9); }
@@ -180,18 +172,11 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   100% { transform: scale(1); }
 }
 
-/* 文本淡出 + 上浮 */
-@keyframes fadeOutUp {
-  0%   { opacity: 1; transform: translateY(0) }
-  100% { opacity: 0; transform: translateY(-6px) }
-}
-/* 句子淡入 + 上浮 */
-@keyframes fadeInUp {
-  0%   { opacity: 0; transform: translateY(6px) scale(.98) }
-  100% { opacity: 1; transform: translateY(0) scale(1) }
-}
+/* 文本淡出/淡入 */
+@keyframes fadeOutUp { 0%{opacity:1; transform:translateY(0)} 100%{opacity:0; transform:translateY(-6px)} }
+@keyframes fadeInUp  { 0%{opacity:0; transform:translateY(6px) scale(.98)} 100%{opacity:1; transform:translateY(0) scale(1)} }
 
-/* —— 第4页：烟花 + 背景漂浮心 + 照片 —— */
+/* —— 背景动效层 —— */
 #fireworks, #floatHearts, #photos{
   position: fixed; inset: 0; pointer-events: none; z-index: 80;
 }
@@ -273,9 +258,11 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   padding: 24px 42px;
   border-radius: 28px;
   background: transparent;
-  transform: scale(0.94) translateY(4px);
-  opacity: 0;
-  will-change: transform, opacity;
+
+  /* 直接最终状态（取消入场动画） */
+  transform: none;
+  opacity: 1;
+  will-change: auto;
   isolation: isolate;
 }
 
@@ -286,25 +273,19 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   inset: 0;
   border-radius: inherit;
   z-index: 0;
-
-  /* 更厚的半透明底色 (0.28 → 0.38) */
   background:
     radial-gradient(140px 140px at 25% 20%, rgba(255,255,255,0.14), rgba(255,255,255,0) 70%),
     radial-gradient(200px 200px at 70% 75%, rgba(255,255,255,0.12), rgba(255,255,255,0) 80%),
     rgba(255,255,255,0.38);
-
-  /* 更强磨砂 (blur 20px → 28px)，饱和/对比也更强 */
   backdrop-filter: blur(28px) saturate(190%) contrast(125%);
   -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(125%);
-
-  /* 内外阴影 → 厚度更强 */
   box-shadow:
-    inset 0 1px 3px rgba(255,255,255,0.4),  /* 内高光 */
-    inset 0 -2px 6px rgba(0,0,0,0.25),      /* 内暗角 */
-    0 25px 55px rgba(0,0,0,0.32);           /* 外阴影更深 */
+    inset 0 1px 3px rgba(255,255,255,0.4),
+    inset 0 -2px 6px rgba(0,0,0,0.25),
+    0 25px 55px rgba(0,0,0,0.32);
 }
 
-/* 边缘渐变描边 + 发光 */
+/* 边缘渐变描边 + 微光 */
 #page4 .goodnight-card::after {
   content: "";
   position: absolute;
@@ -313,27 +294,22 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   z-index: 0;
   background: linear-gradient(135deg, #ff7db1, #ff8bd5, #d899ff, #b380ff);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  padding: 1px;
-  opacity: 1;
-
-  /* 微光效果 */
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  padding: 1px; opacity: 1;
   box-shadow: 0 0 10px rgba(255,150,200,0.6),
               0 0 20px rgba(200,150,255,0.4);
 }
 
+/* —— 禁用任何 .enter 动画（防止误触发） —— */
 #page4 .goodnight-card.enter {
-  animation: cardPopIn .20s cubic-bezier(.22,1,.36,1) both;
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
 }
-@keyframes cardPopIn {
-  0%   { transform: scale(0.86) translateY(10px); opacity: 0; }
-  40%  { transform: scale(1.06) translateY(0px);  opacity: 1; }
-  70%  { transform: scale(0.98) translateY(0px);  opacity: 1; }
-  100% { transform: scale(1)    translateY(0px);  opacity: 1; }
-}
+/* 可留空或移除 */
+@keyframes cardPopIn {}
 
-/* —— 第4页文字：果冻质感 + Q弹循环 —— */
+/* —— 第4页文字：果冻质感 + Q弹循环（保留） —— */
 #page4 .rainbow-text.gel {
   text-shadow:
     0 2px 6px rgba(255, 120, 150, 0.35),
@@ -341,23 +317,14 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
     0 3px 3px rgba(0, 0, 0, 0.20);
   -webkit-text-stroke: 0.6px rgba(255, 255, 255, 0.25);
 }
-
-/* 入场：一次性的果冻弹 */
-#page4 .rainbow-text.jelly-in {
-  animation: jellyIn 0.8s cubic-bezier(.22,1.4,.36,1) both;
-}
+#page4 .rainbow-text.jelly-in { animation: jellyIn 0.8s cubic-bezier(.22,1.4,.36,1) both; }
 @keyframes jellyIn {
   0%   { transform: scale(0.85); }
   40%  { transform: scale(1.15, 0.90); }
   70%  { transform: scale(0.95, 1.05); }
   100% { transform: scale(1); }
 }
-
-/* 循环：Q弹的持续果冻律动 */
-#page4 .rainbow-text.jelly-soft {
-  animation: jellyLoop 1.8s cubic-bezier(.36,0,.66,1) infinite;
-}
-
+#page4 .rainbow-text.jelly-soft { animation: jellyLoop 1.8s cubic-bezier(.36,0,.66,1) infinite; }
 @keyframes jellyLoop {
   0%   { transform: scale(1); }
   15%  { transform: scale(1.18, 0.82); }
@@ -430,40 +397,9 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   pointer-events: none;
 }
 
-/* 末尾：避免重复定义 */
-
-
-
-
-
-/* 第3页淡出，用于和第4页卡片重叠交接 */
+/* 第3页淡出，用于与第4页重叠交接 */
 .love-screen.fade-out {
   opacity: 0;
   transition: opacity .28s ease;
   pointer-events: none;
-}
-
-/* 第4页卡片的入场动画（你已有 enter 动画就用已有的类名） */
-#page4 .goodnight-card {
-  transform: scale(0.94) translateY(4px);
-  opacity: 0;
-  will-change: transform, opacity;
-}
-#page4 .goodnight-card.enter {
-  animation: cardPopIn .15s cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes cardPopIn {
-  0%   { transform: scale(0.90) translateY(10px); opacity: 0; }
-  38%  { transform: scale(1.08) translateY(0px);  opacity: 1; }
-  72%  { transform: scale(0.985) translateY(0px); opacity: 1; }
-  100% { transform: scale(1)     translateY(0px);  opacity: 1; }
-}
-
-
-/* 进入首帧用“轻玻璃”，减轻手机首帧负载；0.48s 后自动去掉该类 */
-@media (max-width: 820px){
-  #page4 .goodnight-card.glass-lite::before{
-    backdrop-filter: blur(6px) saturate(120%) contrast(105%);
-    -webkit-backdrop-filter: blur(6px) saturate(120%) contrast(105%);
-  }
 }

@@ -16,8 +16,7 @@
   // ===== 状态 =====
   let yes1Scale = 1, noBtnScale = 1;
   let fwTimer=null, floatHeartTimer=null, photoTimer=null;
-  let loveStage = 0; // 0：首击播放心弹+显示天数；1：二击跳到第4页
-  let p4EnterPlanned = false; // 由 smoothToPage4 负责触发第4页卡片入场时置为 true
+  let loveStage = 0; // 0：首击心弹+显示天数；1：二击跳到第4页
 
   // —— 布局控制（照片防重叠） —— //
   const SAFE_MARGIN_VW = 3, GRID_COLS = 6, GRID_ROWS = 3, GRID_TOP_VH = 52, GRID_BOTTOM_VH = 92;
@@ -56,24 +55,29 @@
       startPhotos();
       startShootingStars();
 
+      // —— 取消卡片弹入动画：首帧直接可见 —— //
       requestAnimationFrame(() => {
-        // 只有在“不是由 smoothToPage4 接管”的情况下，才在这里自动触发 enter
-        if (!p4EnterPlanned) {
-          const card = document.querySelector('#page4 .goodnight-card');
-          const txt  = document.querySelector('#page4 .rainbow-text');
-          if (card) card.classList.add('enter');
+        const card = document.querySelector('#page4 .goodnight-card');
+        const txt  = document.querySelector('#page4 .rainbow-text');
 
-          if (txt) {
-            txt.classList.add('gel');
-            txt.classList.remove('jelly-in');
-            void txt.offsetWidth;
-            txt.classList.add('jelly-in');
-            setTimeout(() => { txt.classList.add('jelly-soft'); }, 800);
-          }
+        if (card) {
+          card.style.opacity = '1';
+          card.style.transform = 'none';
+          card.style.willChange = 'auto';
         }
-        // 无论如何都把标记复位，防止后续受影响
-        p4EnterPlanned = false;
+
+        // 文字维持果冻质感（入场弹可留可去）
+        if (txt) {
+          txt.classList.add('gel');
+          // 若不想文字也弹入，注释这三行：
+          // txt.classList.remove('jelly-in');
+          // void txt.offsetWidth;
+          // txt.classList.add('jelly-in');
+
+          setTimeout(() => { txt.classList.add('jelly-soft'); }, 800);
+        }
       });
+
     } else {
       stopFireworks();
       stopFloatHearts();
@@ -142,99 +146,51 @@
   }
 
   // —— 手机端预热第4页，降低切换卡顿（最小改动版）——
-  // —— 手机端预热第4页（最小改动 & 更稳）——
-  let p4Primed = false;
   function prewarmPage4(){
-    if (p4Primed) return;
-
     const p4   = document.getElementById('page4');
     const card = document.querySelector('#page4 .goodnight-card');
     const txt  = document.querySelector('#page4 .rainbow-text');
     if (!p4 || !card || !txt) return;
 
-    // 记录原状态
     const prevDisplay = p4.style.display;
-    const prevOpacity = p4.style.opacity;
-    const prevPE      = p4.style.pointerEvents;
+    const prevVis     = p4.style.visibility;
 
-    // 隐形渲染：让浏览器真正做一遍布局+栅格化，但对用户不可见
-    p4.style.display      = 'grid';
-    p4.style.opacity      = '0';
-    p4.style.pointerEvents= 'none';
+    p4.style.display = 'grid';
+    p4.style.visibility = 'hidden';
 
-    // 提前创建合成层，避免首帧卡顿
     card.style.willChange = 'transform, opacity, filter';
     txt.style.willChange  = 'transform, opacity, filter';
-    card.style.transform  = 'translateZ(0)';   // GPU 合成层
+    card.style.transform  = 'translateZ(0) scale(1)';
     txt.style.transform   = 'translateZ(0)';
 
-    // 双 rAF：确保经历样式 -> 布局 -> 绘制 -> 合成的完整帧
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        // 强制计算/绘制
-        p4.getBoundingClientRect();
-        card.offsetWidth;
+    p4.getBoundingClientRect();
+    card.offsetWidth;
 
-        // 还原
-        p4.style.display       = prevDisplay || '';
-        p4.style.opacity       = prevOpacity || '';
-        p4.style.pointerEvents = prevPE || '';
-
-        p4Primed = true;
-      });
-    });
+    p4.style.display   = prevDisplay || '';
+    p4.style.visibility= prevVis || '';
   }
 
   async function smoothToPage4(options = {}) {
     const {
-      explodeTotal = 1600,  // 爆炸总时长 = 你的 BLAST_DUR + DRIFT_DUR
-      prewarmLead = 200,    // 卡片比爆炸提前多少毫秒弹入
-      fadeOutP3  = 280      // 第3页淡出时长，和 CSS 的 .28s 对齐
+      explodeTotal = 1600,  // 爆炸总时长 = BLAST_DUR + DRIFT_DUR
+      prewarmLead = 200,    // 预热提前量（目前仅用于卡片入场时机，现已改为静态）
+      fadeOutP3  = 280      // 第3页淡出时长
     } = options;
 
     const love = document.getElementById('loveScreen');
-    const card = document.querySelector('#page4 .goodnight-card');
 
-    // 交给 smoothToPage4 来触发入场，避免 showPage(4) 再触发一次
-    p4EnterPlanned = true;
-
-    // 安排卡片的入场（带‘轻玻璃’+双 rAF，手机更稳）
-    const scheduleEnter = () => {
-      if (!card) return;
-
-      // 手机端：先上轻玻璃，减负载（需要配合下面的可选 CSS）
-      card.classList.add('glass-lite');
-
-      // 双 rAF 触发 enter，避开主线程拥挤
-      card.classList.remove('enter');  // 重置
-      void card.offsetWidth;           // 强制回流
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          card.classList.add('enter');   // 触发弹入
-          setTimeout(() => {             // 0.48s 后恢复厚玻璃
-            card.classList.remove('glass-lite');
-          }, 480);
-        });
-      });
-    };
-
-    // 1) 立刻切到第4页（预热到场，但卡片还未弹入）
+    // 1) 立刻切到第4页
     showPage(4);
 
-    // 2) 第3页开始淡出（和爆炸尾声重叠）
+    // 2) 第3页淡出，与爆炸尾声重叠
     love.classList.add('fade-out');
-    // 在爆炸结束前 prewarmLead 毫秒，让卡片开始弹入（与尾声重叠更自然）
-    const enterDelay = Math.max(0, explodeTotal - prewarmLead);
-    if (enterDelay === 0) scheduleEnter();
-    else setTimeout(scheduleEnter, enterDelay);
 
-    // 4) 等爆炸真正结束 + 淡出收尾，再彻底隐藏第3页
+    // 3) 等爆炸结束 + 淡出收尾，彻底隐藏第3页
     await new Promise(r => setTimeout(r, Math.max(explodeTotal, prewarmLead) + fadeOutP3));
     love.style.display = 'none';
     love.setAttribute('aria-hidden', 'true');
 
     // 清理第3页心雨
-    const floaters = document.getElementById('floaters');
     if (floaters) floaters.innerHTML = '';
   }
 
@@ -244,13 +200,11 @@
     const R_MIN = 160, R_MAX = 280;
     const BLAST_DUR = 900;          // 第一段外抛
     const DRIFT_DUR = 700;          // 第二段漂移
-    const PAGE_SWITCH_DELAY = 680;  // 切到第4页时机
     const VEIL_MAX_OPACITY = 0.16;
-    const GHOST_SCALE = 1.32;       // 幽灵心扩散
-    const GHOST_DUR = 520;          // 幽灵心淡出时长
-    const SOURCE_VANISH_DUR = 320;  // “源心”同步消失时长
+    const GHOST_SCALE = 1.32;
+    const GHOST_DUR = 520;
+    const SOURCE_VANISH_DUR = 320;
 
-    // 既兼容只有 .heart-svg，也兼容之前可能存在的 .heart-stack
     const heart = document.querySelector('.heart-svg');
     if (!heart) return;
     const heartHolder = heart.closest('.heart-stack') || heart;
@@ -259,8 +213,6 @@
     const cx = rect.left + rect.width / 2;
     const cy = rect.top  + rect.height / 2;
 
-    // 0) 源心同步“融解”：轻放大+淡出（看起来就是它自己炸开）
-    //    用 WAAPI 避免写额外 CSS
     heartHolder.animate(
       [
         { transform: 'scale(1)',    opacity: 1,   filter:'none' },
@@ -268,16 +220,13 @@
       ],
       { duration: SOURCE_VANISH_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
     );
-    // 动画结束后彻底隐藏，避免余光看到它还在
     setTimeout(() => { heartHolder.style.visibility = 'hidden'; }, SOURCE_VANISH_DUR);
 
-    // 1) 幽灵心（用于承接“气浪”）：更大更久，和源心动画重叠几帧，视觉更连贯
     const ghost = heart.cloneNode(true);
-    ghost.classList.add('puff-heart'); // 你已有的 CSS：position:fixed + drop-shadow
+    ghost.classList.add('puff-heart');
     ghost.style.left = rect.left + 'px';
     ghost.style.top  = rect.top  + 'px';
     document.body.appendChild(ghost);
-
     ghost.animate(
       [
         { transform: 'scale(1)',           opacity: 0.9 },
@@ -286,7 +235,6 @@
       { duration: GHOST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
     ).finished.then(() => ghost.remove());
 
-    // 2) 白纱幕：略亮、停久一点
     const veil = document.createElement('div');
     veil.className = 'fade-veil';
     document.body.appendChild(veil);
@@ -295,12 +243,11 @@
       { duration: BLAST_DUR + DRIFT_DUR - 80, easing: 'ease-out', fill: 'forwards' }
     ).finished.then(() => veil.remove());
 
-    // 3) 微粒爱心：两段式（猛爆→漂移下落）
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const m = document.createElement('div');
       m.className = 'micro-heart';
       m.textContent = '❤';
-      const baseSize = 12 + Math.random()*9; // 12~21px
+      const baseSize = 12 + Math.random()*9;
       m.style.fontSize = baseSize + 'px';
       m.style.left = cx + 'px';
       m.style.top  = cy + 'px';
@@ -313,7 +260,6 @@
       const dy  = Math.sin(ang) * r * 0.92;
       const rot = (Math.random()*80 - 40) + 'deg';
 
-      // 第一段：猛爆
       const blast = m.animate(
         [
           { transform: 'translate(0,0) scale(0.86)', opacity: 1,   filter:'blur(0px)' },
@@ -322,7 +268,6 @@
         { duration: BLAST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
       );
 
-      // 第二段：漂移下落
       blast.finished.then(() => {
         const driftX = dx + (Math.random()*60 - 30);
         const driftY = dy + 60 + Math.random()*80;
@@ -336,15 +281,10 @@
       });
     }
 
-    // 4) 爆炸与第4页重叠过渡（更自然）
     (async () => {
-      // 让第4页卡片与爆炸尾声重叠：爆炸总时长 = BLAST_DUR + DRIFT_DUR
-      const EXPLODE_TOTAL = BLAST_DUR + DRIFT_DUR; // 900 + 700 = 1600（按你上面的参数）
-
-      // 先并行触发第4页预热过渡
+      const EXPLODE_TOTAL = BLAST_DUR + DRIFT_DUR;
       smoothToPage4({ explodeTotal: EXPLODE_TOTAL, prewarmLead: 200, fadeOutP3: 280 });
 
-      // 同时在第4页放烟花（承接你的视觉动势）
       const x = innerWidth * 0.5 + (Math.random()*120-60);
       const y = innerHeight * 0.38 + (Math.random()*80-40);
       explode(x, y);
@@ -356,60 +296,33 @@
   loveScreen.addEventListener('click', async (e)=>{
     e.preventDefault(); e.stopPropagation();
 
-    // 第二次点击：进入第4页
     if (loveStage === 1) {
       explodeHeartThenGo();
       return;
     }
-    // 第一次点击：心做果冻弹跳
+
     const heart = document.querySelector('.heart-svg');
     if (heart){
-      // 触发一次性动画
       heart.style.animation = 'jellyPop .52s cubic-bezier(.22,1,.36,1) forwards';
-      // 让 shine 动画在点击时更明显一点（瞬时加速一下）
       const shine = heart.querySelector('.heart-shine');
       if (shine){ shine.style.animationDuration = '2.2s'; setTimeout(()=> shine.style.animationDuration='', 600); }
     }
 
-    // 隐藏“我也爱你！宝宝”，显示天数（占据同样位置）
     const loveLine = $('loveLine');
     const line = $('togetherLine');
-    
+
+    // 预热第4页
+    prewarmPage4();
+
     if (loveLine) loveLine.style.display='none';
     if (line){
       line.hidden=false;
-      // 触发过渡
       requestAnimationFrame(()=> line.classList.add('show'));
-      // 计天（从 2025/05/20）
       const days = daysSince(2025,5,20);
       await countUpTo(days);
-      // 👉 在这里偷偷预热第4页卡片
-      prewarmPage4();
-      
     }
-
-    loveStage = 1; // 等待第二次点击
+    loveStage = 1;
   });
-
-  function countUpTo(days) {
-    return new Promise((resolve) => {
-      let current = 0;
-      const numEl = document.getElementById('daysNum');
-      const step = Math.max(1, Math.floor(days / 60));
-      const interval = setInterval(() => {
-        current += step;
-        if (current >= days) {
-          current = days;
-          clearInterval(interval);
-          resolve();
-        }
-        numEl.textContent = current;
-        numEl.classList.remove('jelly'); // 重置
-        void numEl.offsetWidth;          // 强制回流
-        numEl.classList.add('jelly');    // 触发动画
-      }, 30);
-    });
-  }
 
   // 心心雨
   function sprayHearts(){
@@ -458,7 +371,7 @@
 
   // 照片
   const PHOTO_BASE='./image/';
-  const photoList=[
+  const photoList=[ /* ……你的图片列表原样保留…… */ 
     "IMG_0331.jpg","IMG_0624.jpg","IMG_0112.jpg","IMG_1624.JPG","IMG_1708.JPG","IMG_1873.JPG",
     "IMG_2013.JPG","IMG_2015.JPG","IMG_2019.JPG","IMG_2184.jpg","IMG_2186.JPG","IMG_2027.JPG",
     "IMG_2198.JPG","IMG_3932.JPG","IMG_3984.JPG","IMG_3994.JPG","IMG_9322.JPG","Live.JPG",
