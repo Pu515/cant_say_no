@@ -254,22 +254,13 @@
       const blast = m.animate(
         [
           { transform: 'translate(0,0) scale(0.86)', opacity: 1,   filter:'blur(0px)' },
-          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0.4, filter:'blur(0.4px)' }
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.08)`, opacity: 0, filter:'blur(0.4px)' }
         ],
         { duration: BLAST_DUR, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
       );
 
-      blast.finished.then(() => {
-        const driftX = dx + (Math.random()*60 - 30);
-        const driftY = dy + 60 + Math.random()*80;
-        m.animate(
-          [
-            { transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(1.02)`, opacity: 0.9, filter:'blur(0.25px)' },
-            { transform: `translate(${driftX}px, ${driftY}px) rotate(${rot}) scale(0.98)`, opacity: 0.0, filter:'blur(0.6px)' }
-          ],
-          { duration: DRIFT_DUR, easing: 'cubic-bezier(.25,.8,.28,1)', fill: 'forwards' }
-        ).finished.then(() => m.remove());
-      });
+      // 爆炸段结束就移除元素（不再进入漂移段）
+      blast.finished.then(() => m.remove());
     }
 
     (async () => {
