@@ -403,3 +403,16 @@ h1{ font-size: clamp(20px, 3.4vw, 28px); font-weight:800; letter-spacing:.2px; m
   transition: opacity .28s ease;
   pointer-events: none;
 }
+
+/* ==============================
+   iOS Safari 修复白点问题
+   ============================== */
+@supports (-webkit-touch-callout: none) {
+  #page4 .rainbow-text {
+    -webkit-text-stroke: 0 !important;  /* 去掉描边 */
+    will-change: auto;                  /* 取消强制合成层 */
+    backface-visibility: hidden;        /* 避免字形边缘缝隙 */
+    text-shadow: 0 1px 3px rgba(255,120,150,0.35); /* 保守的柔和阴影 */
+    animation: rainbowFlow 12s ease infinite;      /* 去掉 glowPulse */
+  }
+}

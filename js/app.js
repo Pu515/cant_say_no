@@ -59,22 +59,12 @@
       requestAnimationFrame(() => {
         const card = document.querySelector('#page4 .goodnight-card');
         const txt  = document.querySelector('#page4 .rainbow-text');
+        if (card) card.classList.add('enter');
 
-        if (card) {
-          card.style.opacity = '1';
-          card.style.transform = 'none';
-          card.style.willChange = 'auto';
-        }
-
-        // 文字维持果冻质感（入场弹可留可去）
         if (txt) {
-          txt.classList.add('gel');
-          // 若不想文字也弹入，注释这三行：
-          // txt.classList.remove('jelly-in');
-          // void txt.offsetWidth;
-          // txt.classList.add('jelly-in');
-
-          setTimeout(() => { txt.classList.add('jelly-soft'); }, 800);
+          // 直接进入最终视觉状态：gel + jelly-soft
+          txt.classList.remove('jelly-in');
+          txt.classList.add('gel', 'jelly-soft');
         }
       });
 
